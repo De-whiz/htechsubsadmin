@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Users - HTECHSUBS Admin Panel</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        .table-container {
+            background: var(--white);
+            border: 1px solid var(--border-lighter);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: var(--bg-light-secondary);
+            border-bottom: 1px solid var(--border-lighter);
+        }
+
+        .table th {
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-lighter);
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .table tbody tr {
+            transition: var(--transition-fast);
+        }
+
+        .table tbody tr:hover {
+            background: var(--bg-light-secondary);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-badge.suspended {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .api-key-display {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            background: var(--bg-light-secondary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            color: var(--text-dark);
+            word-break: break-all;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-icon-sm {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: var(--radius-md);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .filters {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .filters select,
+        .filters input {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-lighter);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        @media (max-width: 1024px) {
+            .table {
+                font-size: 12px;
+            }
+
+            .table th,
+            .table td {
+                padding: var(--spacing-md);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .user-cell {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters {
+                width: 100%;
+            }
+
+            .filters input,
+            .filters select {
+                flex: 1;
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">HT</div>
+                <div class="sidebar-header-text">
+                    <h2>HTECHSUBS</h2>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <!-- Main -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Main</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="index.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Management -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Management</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="users.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="transactions.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.53-1.69 0-.45.54-.45 1.47 0 2.01l3 3.68c.44.53 1.25.53 1.69 0l4.15-5.16c.44-.53.44-1.47 0-2.01-.45-.54-1.25-.54-1.69 0z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Transactions</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Services</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'dataSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Data Services</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="dataSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="data-plans.html" class="sidebar-menu-link">Data Plans</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="pricing.html" class="sidebar-menu-link">Pricing</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="airtime.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Airtime</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="cable-electricity.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 6h-2v3h2V6zm0 4h-2v3h2v-3zM3 6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H3zm2 10h14v4H5v-4zm0-5h14v3H5v-3z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Cable & Electricity</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="exam-checkers.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1zm0 20c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Exam Checkers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="nin-services.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">NIN Services</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="cac-services.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">CAC Services</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Other -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Other</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="api-management.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">API Management</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="pricing.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Pricing</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="notifications.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Notifications</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="reports.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="settings.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- NAVBAR -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="navbar-toggle-btn" id="sidebarToggle">☰</button>
+                    <div class="navbar-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span>/</span>
+                        <span>API Users</span>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <div class="navbar-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                        </svg>
+                        <input type="text" placeholder="Search users...">
+                    </div>
+
+                    <div class="navbar-actions">
+                        <button class="navbar-action-btn">🔔</button>
+                        <button class="navbar-action-btn">⚙️</button>
+                        <button class="navbar-action-btn" onclick="logout()">🚪</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-md);">API Users</h1>
+                    <p style="color: var(--text-light); font-size: 14px;">Manage API users and developer accounts</p>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="toolbar">
+                    <div class="filters">
+                        <input type="text" placeholder="Search API key or user..." style="min-width: 250px;">
+                        <select style="min-width: 200px;">
+                            <option>All Status</option>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                            <option>Suspended</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">+ Add API User</button>
+                </div>
+
+                <!-- TABLE -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>API Key</th>
+                                <th>Total Requests</th>
+                                <th>Success Rate</th>
+                                <th>Wallet Balance</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">JD</div>
+                                        <div class="user-info">
+                                            <h4>John Developer</h4>
+                                            <p>john@apidev.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="api-key-display">sk_live_51Qw...7Zk9</div>
+                                </td>
+                                <td>45,234</td>
+                                <td><span style="color: var(--success); font-weight: 600;">98.5%</span></td>
+                                <td>₦125,500</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>Dec 15, 2025</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-secondary btn-icon-sm" title="View">👁️</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Regenerate">🔄</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Suspend">⏸️</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar" style="background: linear-gradient(135deg, var(--warning), #FCD34D);">SC</div>
+                                        <div class="user-info">
+                                            <h4>Sarah Commerce</h4>
+                                            <p>sarah@startup.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="api-key-display">sk_live_89Pq...4Rm2</div>
+                                </td>
+                                <td>12,456</td>
+                                <td><span style="color: var(--warning); font-weight: 600;">87.3%</span></td>
+                                <td>₦45,200</td>
+                                <td><span class="status-badge suspended">Suspended</span></td>
+                                <td>Nov 8, 2025</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-secondary btn-icon-sm" title="View">👁️</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Regenerate">🔄</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Enable">▶️</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar" style="background: linear-gradient(135deg, #10B981, #6EE7B7);">MK</div>
+                                        <div class="user-info">
+                                            <h4>Mike Kwame</h4>
+                                            <p>mike.kwame@company.ng</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="api-key-display">sk_live_76Hj...9Wv3</div>
+                                </td>
+                                <td>78,945</td>
+                                <td><span style="color: var(--success); font-weight: 600;">99.2%</span></td>
+                                <td>₦892,750</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>Oct 2, 2025</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-secondary btn-icon-sm" title="View">👁️</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Regenerate">🔄</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Suspend">⏸️</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);">TP</div>
+                                        <div class="user-info">
+                                            <h4>Tech Platform Inc</h4>
+                                            <p>api@techplatform.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="api-key-display">sk_live_34Xy...8Qp5</div>
+                                </td>
+                                <td>234,567</td>
+                                <td><span style="color: var(--success); font-weight: 600;">97.8%</span></td>
+                                <td>₦2,450,000</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>Aug 20, 2025</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-secondary btn-icon-sm" title="View">👁️</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Regenerate">🔄</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Suspend">⏸️</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar" style="background: linear-gradient(135deg, var(--danger), #FCA5A5);">NT</div>
+                                        <div class="user-info">
+                                            <h4>Nnamdi Tech</h4>
+                                            <p>nnamdi@ntech.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="api-key-display">sk_live_12Cd...6Ef8</div>
+                                </td>
+                                <td>5,234</td>
+                                <td><span style="color: var(--warning); font-weight: 600;">72.1%</span></td>
+                                <td>₦18,900</td>
+                                <td><span class="status-badge inactive">Inactive</span></td>
+                                <td>Jul 5, 2025</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-secondary btn-icon-sm" title="View">👁️</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Regenerate">🔄</button>
+                                        <button class="btn btn-secondary btn-icon-sm" title="Enable">▶️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION -->
+                <div style="display: flex; justify-content: center; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                    <button class="btn btn-secondary" disabled>← Previous</button>
+                    <button class="btn" style="background: var(--primary-purple); color: var(--white);">1</button>
+                    <button class="btn btn-secondary">2</button>
+                    <button class="btn btn-secondary">3</button>
+                    <button class="btn btn-secondary">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-functions.js"></script>
+    <script>
+        // Check auth
+        checkAuth();
+    </script>
+</body>
+</html>

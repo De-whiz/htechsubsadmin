@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - HTECHSUBS Admin Panel</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        .transaction-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .summary-stat {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-lighter);
+            text-align: center;
+        }
+
+        .summary-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .summary-stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR (Same structure) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">HT</div>
+                <div class="sidebar-header-text">
+                    <h2>HTECHSUBS</h2>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Main</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="index.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Management</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="users.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="transactions.html" class="sidebar-menu-link active">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.53-1.69 0-.45.54-.45 1.47 0 2.01l3 3.68c.44.53 1.25.53 1.69 0l4.15-5.16c.44-.53.44-1.47 0-2.01-.45-.54-1.25-.54-1.69 0z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Transactions</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'fundingSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Wallet Requests</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="fundingSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="#" class="sidebar-menu-link">Fund Requests</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="#" class="sidebar-menu-link">Fund User</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Services</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'dataSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Data Services</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="dataSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="data-plans.html" class="sidebar-menu-link">Data Plans</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="pricing.html" class="sidebar-menu-link">Pricing</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Airtime</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 6h-2v3h2V6zm0 4h-2v3h2v-3zM3 6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H3zm2 10h14v4H5v-4zm0-5h14v3H5v-3z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Cable & Electricity</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1zm0 20c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Exam Checkers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">NIN Services</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">CAC Services</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Other</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">API Management</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Pricing</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Notifications</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="settings.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- NAVBAR -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="navbar-toggle-btn" id="sidebarToggle">☰</button>
+                    <div class="navbar-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span>/</span>
+                        <a href="#">Transactions</a>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <div class="navbar-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search transactions...">
+                    </div>
+
+                    <div class="navbar-actions">
+                        <button class="navbar-action-btn">
+                            🔔
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <button class="navbar-action-btn">⚙️</button>
+                        <button class="navbar-action-btn" onclick="logout()">🚪</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <div style="margin-bottom: var(--spacing-xl); display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-md);">Transactions</h1>
+                        <p style="color: var(--text-light); font-size: 14px;">Monitor all platform transactions in real-time</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+                </div>
+
+                <!-- TRANSACTION SUMMARY -->
+                <div class="transaction-summary">
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" style="color: var(--primary-purple);">₦8.4M</div>
+                        <div class="summary-stat-label">Total Volume</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" style="color: var(--success);">12,847</div>
+                        <div class="summary-stat-label">Successful</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" style="color: var(--warning);">543</div>
+                        <div class="summary-stat-label">Pending</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value" style="color: var(--danger);">892</div>
+                        <div class="summary-stat-label">Failed</div>
+                    </div>
+                </div>
+
+                <!-- FILTERS -->
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select class="form-select" id="statusFilter" style="width: 150px;">
+                                <option value="">All Status</option>
+                                <option value="successful">Successful</option>
+                                <option value="pending">Pending</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Service:</label>
+                            <select class="form-select" id="serviceFilter" style="width: 150px;">
+                                <option value="">All Services</option>
+                                <option value="data">Data</option>
+                                <option value="airtime">Airtime</option>
+                                <option value="cable">Cable</option>
+                                <option value="electricity">Electricity</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Date Range:</label>
+                            <input type="date" class="form-input" style="width: 150px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANSACTIONS TABLE -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Recent Transactions</h2>
+                        <div class="card-header-action">
+                            <span style="color: var(--text-light); font-size: 13px;">Showing <strong id="txCount">20</strong> transactions</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">TXN ID</th>
+                                    <th>User</th>
+                                    <th>Service</th>
+                                    <th>Network</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date & Time</th>
+                                    <th style="width: 100px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter);">
+                        <div style="color: var(--text-light); font-size: 13px;">Page 1 of 50</div>
+                        <div class="pagination">
+                            <button class="pagination-btn" disabled>← Previous</button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">Next →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSACTION DETAILS MODAL -->
+    <div class="modal" id="txnModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Transaction Details</h2>
+                <button class="modal-close-btn" onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Transaction ID</div>
+                        <div style="font-weight: 600; color: var(--text-dark);" id="txnId">TXN-2024-001234</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Status</div>
+                        <div id="txnStatus" style="font-weight: 600;">Status</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Amount</div>
+                        <div style="font-weight: 600; color: var(--success); font-size: 18px;" id="txnAmount">₦5,000</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Commission</div>
+                        <div style="font-weight: 600; color: var(--text-dark);" id="txnCommission">₦150</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-light-secondary); border-radius: var(--radius-md); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <h3 style="font-size: 14px; font-weight: 600; margin-bottom: var(--spacing-md); color: var(--text-dark);">Additional Information</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <div>
+                            <div style="color: var(--text-light); font-size: 11px; margin-bottom: 4px;">Balance Before</div>
+                            <div style="font-weight: 600; color: var(--text-dark);" id="balanceBefore">₦50,000</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-light); font-size: 11px; margin-bottom: 4px;">Balance After</div>
+                            <div style="font-weight: 600; color: var(--text-dark);" id="balanceAfter">₦44,850</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-light); font-size: 11px; margin-bottom: 4px;">Reference</div>
+                            <div style="font-weight: 600; color: var(--primary-purple);" id="txnRef">REF123456789</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--text-light); font-size: 11px; margin-bottom: 4px;">API Response</div>
+                            <div style="font-weight: 600; color: var(--success);" id="apiResponse">Success</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm); font-weight: 600;">Timestamp</div>
+                    <div style="color: var(--text-dark); font-size: 13px;" id="txnTime">2024-03-20 14:30:45</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary">Refund Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-functions.js"></script>
+    <script>
+        // Check authentication
+        if (localStorage.getItem('adminLogged') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Sample transaction data
+        const transactions = [
+            { id: 'TXN-2024-001', user: 'John Doe', service: 'Data', network: 'MTN', amount: 5000, status: 'successful', date: '2024-03-20 14:30', ref: 'REF001', before: 50000, after: 44850 },
+            { id: 'TXN-2024-002', user: 'Jane Smith', service: 'Airtime', network: 'Glo', amount: 2500, status: 'successful', date: '2024-03-20 13:45', ref: 'REF002', before: 120000, after: 117450 },
+            { id: 'TXN-2024-003', user: 'Ahmed Ibrahim', service: 'Cable', network: 'DSTV', amount: 8000, status: 'pending', date: '2024-03-20 13:20', ref: 'REF003', before: 23000, after: 15000 },
+            { id: 'TXN-2024-004', user: 'Chioma Eze', service: 'Electricity', network: 'IKEDC', amount: 3500, status: 'failed', date: '2024-03-20 12:15', ref: 'REF004', before: 10000, after: 10000 },
+            { id: 'TXN-2024-005', user: 'Oluwaseun Adebayo', service: 'Data', network: 'Airtel', amount: 6000, status: 'successful', date: '2024-03-20 11:30', ref: 'REF005', before: 89000, after: 82900 },
+            { id: 'TXN-2024-006', user: 'Fatima Mohammed', service: 'Airtime', network: 'MTN', amount: 4000, status: 'successful', date: '2024-03-20 10:45', ref: 'REF006', before: 156000, after: 151900 },
+            { id: 'TXN-2024-007', user: 'David Okafor', service: 'Data', network: 'Jio', amount: 3500, status: 'successful', date: '2024-03-20 09:30', ref: 'REF007', before: 34500, after: 30950 },
+            { id: 'TXN-2024-008', user: 'Gloria Chukwu', service: 'Cable', network: 'GOTV', amount: 5500, status: 'successful', date: '2024-03-20 08:15', ref: 'REF008', before: 78900, after: 73350 },
+            { id: 'TXN-2024-009', user: 'Isiaka Bello', service: 'Electricity', network: 'EEDC', amount: 2000, status: 'pending', date: '2024-03-19 22:00', ref: 'REF009', before: 12000, after: 10000 },
+            { id: 'TXN-2024-010', user: 'Amara Okoro', service: 'Airtime', network: 'Airtel', amount: 7000, status: 'successful', date: '2024-03-19 20:30', ref: 'REF010', before: 245000, after: 237900 },
+        ];
+
+        let currentFilters = {};
+
+        // Render transactions
+        function renderTransactions() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+
+            let filtered = transactions.filter(tx => {
+                if (currentFilters.status && tx.status !== currentFilters.status) return false;
+                if (currentFilters.service && tx.service !== currentFilters.service) return false;
+                if (currentFilters.search && !tx.id.toLowerCase().includes(currentFilters.search.toLowerCase()) &&
+                    !tx.user.toLowerCase().includes(currentFilters.search.toLowerCase())) return false;
+                return true;
+            });
+
+            document.getElementById('txCount').textContent = filtered.length;
+
+            filtered.forEach(tx => {
+                const row = document.createElement('tr');
+                const statusColor = tx.status === 'successful' ? 'success' : tx.status === 'pending' ? 'warning' : 'danger';
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: var(--primary-purple);">${tx.id}</td>
+                    <td>${tx.user}</td>
+                    <td>${tx.service}</td>
+                    <td>${tx.network}</td>
+                    <td style="font-weight: 600;">₦${tx.amount.toLocaleString()}</td>
+                    <td>
+                        <span class="status-badge ${statusColor}">
+                            ${tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
+                        </span>
+                    </td>
+                    <td style="font-size: 12px; color: var(--text-light);">${tx.date}</td>
+                    <td>
+                        <button class="table-action-btn" onclick="viewTransaction('${tx.id}')" title="View Details">👁️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // View transaction details
+        function viewTransaction(txnId) {
+            const tx = transactions.find(t => t.id === txnId);
+            if (tx) {
+                document.getElementById('txnId').textContent = tx.id;
+                document.getElementById('txnStatus').innerHTML = `<span class="status-badge ${tx.status === 'successful' ? 'success' : tx.status === 'pending' ? 'warning' : 'danger'}">${tx.status.toUpperCase()}</span>`;
+                document.getElementById('txnAmount').textContent = `₦${tx.amount.toLocaleString()}`;
+                document.getElementById('txnCommission').textContent = `₦${Math.floor(tx.amount * 0.03).toLocaleString()}`;
+                document.getElementById('balanceBefore').textContent = `₦${tx.before.toLocaleString()}`;
+                document.getElementById('balanceAfter').textContent = `₦${tx.after.toLocaleString()}`;
+                document.getElementById('txnRef').textContent = tx.ref;
+                document.getElementById('apiResponse').textContent = tx.status === 'successful' ? 'Success' : tx.status === 'pending' ? 'Processing' : 'Failed';
+                document.getElementById('txnTime').textContent = tx.date;
+                document.getElementById('txnModal').classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('txnModal').classList.remove('active');
+        }
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentFilters.search = e.target.value;
+            renderTransactions();
+        });
+
+        // Status filter
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            currentFilters.status = e.target.value;
+            renderTransactions();
+        });
+
+        // Service filter
+        document.getElementById('serviceFilter').addEventListener('change', (e) => {
+            currentFilters.service = e.target.value;
+            renderTransactions();
+        });
+
+        // Export CSV
+        function exportCSV() {
+            alert('CSV export feature coming soon!');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminLogged');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initial render
+        renderTransactions();
+    </script>
+</body>
+</html>

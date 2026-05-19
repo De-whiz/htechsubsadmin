@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtime Services - HTECHSUBS Admin Panel</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">HT</div>
+                <div class="sidebar-header-text">
+                    <h2>HTECHSUBS</h2>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Main</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="index.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <div class="main-content">
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="navbar-toggle-btn" id="sidebarToggle">☰</button>
+                    <div class="navbar-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span>/</span>
+                        <a href="airtime.html">Airtime Services</a>
+                    </div>
+                </div>
+                <div class="navbar-right">
+                    <div class="navbar-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                        </svg>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="navbar-actions">
+                        <button class="navbar-action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <button class="navbar-action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                            </svg>
+                        </button>
+                        <button class="navbar-action-btn" onclick="logout()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="content">
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-md);">Airtime Services</h1>
+                    <p style="color: var(--text-light); font-size: 14px;">Manage airtime offerings for all networks</p>
+                </div>
+
+                <div class="card">
+                    <div style="padding: var(--spacing-lg);">
+                        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: var(--spacing-lg); color: var(--text-dark);">Airtime Plans</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg);">
+                            <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--primary-purple);">
+                                <div style="font-weight: 600; margin-bottom: var(--spacing-sm);">MTN Airtime</div>
+                                <div style="font-size: 14px; color: var(--text-light); margin-bottom: var(--spacing-md);">All amounts available</div>
+                                <div style="display: flex; gap: var(--spacing-sm);">
+                                    <button class="btn btn-secondary btn-sm">Edit</button>
+                                    <button class="btn btn-secondary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                            <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--primary-purple);">
+                                <div style="font-weight: 600; margin-bottom: var(--spacing-sm);">Airtel Airtime</div>
+                                <div style="font-size: 14px; color: var(--text-light); margin-bottom: var(--spacing-md);">All amounts available</div>
+                                <div style="display: flex; gap: var(--spacing-sm);">
+                                    <button class="btn btn-secondary btn-sm">Edit</button>
+                                    <button class="btn btn-secondary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                            <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--primary-purple);">
+                                <div style="font-weight: 600; margin-bottom: var(--spacing-sm);">Glo Airtime</div>
+                                <div style="font-size: 14px; color: var(--text-light); margin-bottom: var(--spacing-md);">All amounts available</div>
+                                <div style="display: flex; gap: var(--spacing-sm);">
+                                    <button class="btn btn-secondary btn-sm">Edit</button>
+                                    <button class="btn btn-secondary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                            <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md); border-left: 4px solid var(--primary-purple);">
+                                <div style="font-weight: 600; margin-bottom: var(--spacing-sm);">9Mobile Airtime</div>
+                                <div style="font-size: 14px; color: var(--text-light); margin-bottom: var(--spacing-md);">All amounts available</div>
+                                <div style="display: flex; gap: var(--spacing-sm);">
+                                    <button class="btn btn-secondary btn-sm">Edit</button>
+                                    <button class="btn btn-secondary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-functions.js"></script>
+    <script>
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management - HTECHSUBS Admin Panel</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR (Same as dashboard) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">HT</div>
+                <div class="sidebar-header-text">
+                    <h2>HTECHSUBS</h2>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Main</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="index.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Management</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="users.html" class="sidebar-menu-link active">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="transactions.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.53-1.69 0-.45.54-.45 1.47 0 2.01l3 3.68c.44.53 1.25.53 1.69 0l4.15-5.16c.44-.53.44-1.47 0-2.01-.45-.54-1.25-.54-1.69 0z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Transactions</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'fundingSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Wallet Requests</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="fundingSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="#" class="sidebar-menu-link">Fund Requests</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="#" class="sidebar-menu-link">Fund User</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Services</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'dataSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Data Services</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="dataSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="data-plans.html" class="sidebar-menu-link">Data Plans</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="pricing.html" class="sidebar-menu-link">Pricing</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Airtime</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 6h-2v3h2V6zm0 4h-2v3h2v-3zM3 6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H3zm2 10h14v4H5v-4zm0-5h14v3H5v-3z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Cable & Electricity</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1zm0 20c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Exam Checkers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">NIN Services</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">CAC Services</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Other</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">API Management</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Pricing</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Notifications</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="settings.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- NAVBAR -->
+            <nav class="navbar">
+                <div class="navbar-left">
+                    <button class="navbar-toggle-btn" id="sidebarToggle">☰</button>
+                    <div class="navbar-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span>/</span>
+                        <a href="#">Users</a>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <div class="navbar-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search users...">
+                    </div>
+
+                    <div class="navbar-actions">
+                        <button class="navbar-action-btn">
+                            🔔
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <button class="navbar-action-btn">⚙️</button>
+                        <button class="navbar-action-btn" onclick="logout()">🚪</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <div style="margin-bottom: var(--spacing-xl); display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-md);">Users Management</h1>
+                        <p style="color: var(--text-light); font-size: 14px;">Manage and monitor all platform users</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddUserModal()">+ Add User</button>
+                </div>
+
+                <!-- TABS -->
+                <div class="card" style="margin-bottom: var(--spacing-lg); padding: 0;">
+                    <div style="display: flex; border-bottom: 2px solid var(--border-lighter); background: var(--bg-light-secondary);">
+                        <button class="user-tab active" data-tab="all" onclick="switchTab('all', event)" style="flex: 1; padding: var(--spacing-lg); text-align: center; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent; transition: all 0.3s;">
+                            All Users
+                        </button>
+                        <button class="user-tab" data-tab="level1" onclick="switchTab('level1', event)" style="flex: 1; padding: var(--spacing-lg); text-align: center; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent; transition: all 0.3s;">
+                            Level 1 (Regular)
+                        </button>
+                        <button class="user-tab" data-tab="level2" onclick="switchTab('level2', event)" style="flex: 1; padding: var(--spacing-lg); text-align: center; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent; transition: all 0.3s;">
+                            Level 2 (Developers)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FILTERS -->
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select class="form-select" id="statusFilter" style="width: 150px;">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="suspended">Suspended</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Date Range:</label>
+                            <input type="date" class="form-input" style="width: 150px;">
+                        </div>
+                        <div class="filter-group" style="margin-left: auto;">
+                            <button class="btn btn-secondary btn-sm">Export CSV</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USERS TABLE -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Users List</h2>
+                        <div class="card-header-action">
+                            <span style="color: var(--text-light); font-size: 13px;">Showing <strong id="userCount">12</strong> users</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Wallet Balance</th>
+                                    <th>Status</th>
+                                    <th>Date Joined</th>
+                                    <th style="width: 120px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter);">
+                        <div style="color: var(--text-light); font-size: 13px;">Page 1 of 10</div>
+                        <div class="pagination">
+                            <button class="pagination-btn" disabled>← Previous</button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">Next →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- USER DETAILS MODAL -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">User Details</h2>
+                <button class="modal-close-btn" onclick="closeUserModal()">x</button>
+            </div>
+
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Full Name</div>
+                        <div style="font-weight: 600; color: var(--text-dark);" id="modalFullName">John Doe</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Email</div>
+                        <div style="font-weight: 600; color: var(--text-dark);" id="modalEmail">john@example.com</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Phone</div>
+                        <div style="font-weight: 600; color: var(--text-dark);" id="modalPhone">+234 806 123 4567</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Wallet Balance</div>
+                        <div style="font-weight: 600; color: var(--success);" id="modalBalance">₦45,500</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-light-secondary); border-radius: var(--radius-md); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <h3 style="font-size: 14px; font-weight: 600; margin-bottom: var(--spacing-md); color: var(--text-dark);">Recent Transactions</h3>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <div id="transactionsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Total Transactions</div>
+                        <div style="font-weight: 600; color: var(--text-dark); font-size: 20px;" id="modalTotalTransactions">125</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-light); font-size: 12px; text-transform: uppercase; margin-bottom: var(--spacing-sm);">Referral Bonus</div>
+                        <div style="font-weight: 600; color: var(--success); font-size: 20px;" id="modalReferral">₦8,200</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUserModal()">Close</button>
+                <button class="btn btn-primary">Edit User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT USER MODAL -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="modal-close-btn" onclick="closeAddUserModal()">x</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label class="form-label required">Full Name</label>
+                        <input type="text" class="form-input" id="newUserName" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Email</label>
+                        <input type="email" class="form-input" id="newUserEmail" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Phone</label>
+                        <input type="tel" class="form-input" id="newUserPhone" placeholder="+234 806 123 4567" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Initial Wallet Balance</label>
+                        <input type="number" class="form-input" id="newUserBalance" placeholder="0.00" value="0">
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUser()">Create User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT USER MODAL -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit User</h2>
+                <button class="modal-close-btn" onclick="closeEditUserModal()">x</button>
+            </div>
+
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="editUserName" placeholder="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="editUserEmail" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" id="editUserPhone" placeholder="+234 806 123 4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editUserStatus">
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveEditUser()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUND USER MODAL -->
+    <div class="modal" id="fundUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Fund User Account</h2>
+                <button class="modal-close-btn" onclick="closeFundUserModal()">x</button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="fundUserId">
+
+                <div style="background: var(--bg-light-secondary); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">User</div>
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 12px;" id="fundUserName">John Doe</div>
+
+                    <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Email</div>
+                    <div style="font-size: 13px; margin-bottom: 12px;" id="fundUserEmail">john@example.com</div>
+
+                    <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Current Balance</div>
+                    <div style="font-weight: 600; font-size: 16px; color: var(--success);" id="fundUserCurrentBalance">₦45,500</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount to Fund (₦)</label>
+                    <input type="number" class="form-input" id="fundAmount" placeholder="Enter amount" step="100">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Reference/Note</label>
+                    <textarea class="form-input" placeholder="Optional note..." style="resize: vertical; height: 80px;"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFundUserModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveFundUser()">Fund Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-functions.js"></script>
+    <script>
+        // Check authentication
+        if (localStorage.getItem('adminLogged') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Sample user data
+        const sampleUsers = [
+            { id: 'USR001', name: 'John Doe', email: 'john@example.com', phone: '+234 806 123 4567', balance: 45500, status: 'active', joined: '2024-01-15', level: 1 },
+            { id: 'USR002', name: 'Jane Smith', email: 'jane@example.com', phone: '+234 807 234 5678', balance: 120000, status: 'active', joined: '2024-01-20', level: 2 },
+            { id: 'USR003', name: 'Ahmed Ibrahim', email: 'ahmed@example.com', phone: '+234 808 345 6789', balance: 23000, status: 'pending', joined: '2024-02-01', level: 1 },
+            { id: 'USR004', name: 'Chioma Eze', email: 'chioma@example.com', phone: '+234 809 456 7890', balance: 0, status: 'suspended', joined: '2024-02-05', level: 2 },
+            { id: 'USR005', name: 'Oluwaseun Adebayo', email: 'seun@example.com', phone: '+234 810 567 8901', balance: 89000, status: 'active', joined: '2024-02-10', level: 1 },
+            { id: 'USR006', name: 'Fatima Mohammed', email: 'fatima@example.com', phone: '+234 811 678 9012', balance: 156000, status: 'active', joined: '2024-02-15', level: 2 },
+            { id: 'USR007', name: 'David Okafor', email: 'david@example.com', phone: '+234 812 789 0123', balance: 34500, status: 'active', joined: '2024-02-20', level: 1 },
+            { id: 'USR008', name: 'Gloria Chukwu', email: 'gloria@example.com', phone: '+234 813 890 1234', balance: 78900, status: 'active', joined: '2024-03-01', level: 1 },
+            { id: 'USR009', name: 'Isiaka Bello', email: 'isiaka@example.com', phone: '+234 814 901 2345', balance: 12000, status: 'pending', joined: '2024-03-05', level: 2 },
+            { id: 'USR010', name: 'Amara Okoro', email: 'amara@example.com', phone: '+234 815 012 3456', balance: 245000, status: 'active', joined: '2024-03-10', level: 1 },
+            { id: 'USR011', name: 'Karim Hassan', email: 'karim@example.com', phone: '+234 816 123 4567', balance: 67800, status: 'active', joined: '2024-03-15', level: 2 },
+            { id: 'USR012', name: 'Ngozi Uchenna', email: 'ngozi@example.com', phone: '+234 817 234 5678', balance: 95000, status: 'active', joined: '2024-03-20', level: 1 },
+        ];
+
+        let currentFilter = {};
+        let currentTab = 'all';
+
+        // Tab switching function
+        function switchTab(tabName, event) {
+            event.preventDefault();
+            currentTab = tabName;
+            
+            // Update tab UI
+            document.querySelectorAll('.user-tab').forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabName) {
+                    tab.style.borderBottomColor = 'var(--primary-purple)';
+                    tab.style.color = 'var(--primary-purple)';
+                } else {
+                    tab.style.borderBottomColor = 'transparent';
+                    tab.style.color = 'var(--text-light)';
+                }
+            });
+            
+            renderUsers();
+        }
+
+        // Render users table
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            let filteredUsers = sampleUsers.filter(user => {
+                if (currentTab === 'level1' && user.level !== 1) return false;
+                if (currentTab === 'level2' && user.level !== 2) return false;
+                if (currentFilter.status && user.status !== currentFilter.status) return false;
+                if (currentFilter.search && !user.name.toLowerCase().includes(currentFilter.search.toLowerCase()) &&
+                    !user.email.toLowerCase().includes(currentFilter.search.toLowerCase())) return false;
+                return true;
+            });
+
+            document.getElementById('userCount').textContent = filteredUsers.length;
+
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: var(--primary-purple);">${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td style="font-weight: 600; color: var(--success);">₦${user.balance.toLocaleString()}</td>
+                    <td>
+                        <span class="status-badge ${user.status}">
+                            ${user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>${new Date(user.joined).toLocaleDateString()}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="table-action-btn" onclick="viewUser('${user.id}')" title="View">👁️</button>
+                            <button class="table-action-btn" onclick="editUser('${user.id}')" title="Edit">✏️</button>
+                            <button class="table-action-btn" onclick="fundUser('${user.id}')" title="Fund">💰</button>
+                            <button class="table-action-btn delete" onclick="suspendUser('${user.id}')" title="Suspend">🚫</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // View user details
+        function viewUser(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (user) {
+                document.getElementById('modalTitle').textContent = 'User Details';
+                document.getElementById('modalFullName').textContent = user.name;
+                document.getElementById('modalEmail').textContent = user.email;
+                document.getElementById('modalPhone').textContent = user.phone;
+                document.getElementById('modalBalance').textContent = `₦${user.balance.toLocaleString()}`;
+                document.getElementById('modalTotalTransactions').textContent = Math.floor(Math.random() * 500) + 50;
+                document.getElementById('modalReferral').textContent = `₦${(Math.random() * 20000).toFixed(0)}`;
+
+                // Populate transactions
+                const transactionsList = document.getElementById('transactionsList');
+                transactionsList.innerHTML = `
+                    <div style="padding: var(--spacing-sm); background: white; border-radius: var(--radius-sm); border-left: 3px solid var(--success);">
+                        <div style="font-size: 12px; color: var(--text-light);">Data Purchase - MTN 5GB</div>
+                        <div style="font-weight: 600; color: var(--success);">+₦5,000</div>
+                        <div style="font-size: 11px; color: var(--text-light);">2024-03-20 14:30</div>
+                    </div>
+                    <div style="padding: var(--spacing-sm); background: white; border-radius: var(--radius-sm); border-left: 3px solid var(--success);">
+                        <div style="font-size: 12px; color: var(--text-light);">Airtime - Glo 500</div>
+                        <div style="font-weight: 600; color: var(--success);">+₦2,800</div>
+                        <div style="font-size: 11px; color: var(--text-light);">2024-03-19 10:15</div>
+                    </div>
+                    <div style="padding: var(--spacing-sm); background: white; border-radius: var(--radius-sm); border-left: 3px solid var(--danger);">
+                        <div style="font-size: 12px; color: var(--text-light);">Cable - DSTV Renewal</div>
+                        <div style="font-weight: 600; color: var(--danger);">-₦3,500</div>
+                        <div style="font-size: 11px; color: var(--text-light);">2024-03-18 08:45</div>
+                    </div>
+                `;
+
+                document.getElementById('userModal').classList.add('active');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentFilter.search = e.target.value;
+            renderUsers();
+        });
+
+        // Filter by status
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            currentFilter.status = e.target.value;
+            renderUsers();
+        });
+
+        // Open/close modals
+        function openAddUserModal() {
+            document.getElementById('addUserModal').classList.add('active');
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('active');
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+        }
+
+        function closeFundUserModal() {
+            document.getElementById('fundUserModal').classList.remove('active');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        // Action functions
+        function editUser(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (user) {
+                const modal = document.getElementById('editUserModal');
+                document.getElementById('editUserId').value = user.id;
+                document.getElementById('editUserName').value = user.name;
+                document.getElementById('editUserEmail').value = user.email;
+                document.getElementById('editUserPhone').value = user.phone;
+                document.getElementById('editUserStatus').value = user.status;
+                modal.classList.add('active');
+            }
+        }
+
+        function fundUser(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (user) {
+                const modal = document.getElementById('fundUserModal');
+                document.getElementById('fundUserId').value = user.id;
+                document.getElementById('fundUserName').textContent = user.name;
+                document.getElementById('fundUserEmail').textContent = user.email;
+                document.getElementById('fundUserCurrentBalance').textContent = `₦${user.balance.toLocaleString()}`;
+                document.getElementById('fundAmount').value = '';
+                modal.classList.add('active');
+            }
+        }
+
+        function suspendUser(userId) {
+            const user = sampleUsers.find(u => u.id === userId);
+            if (user) {
+                if (user.status === 'suspended') {
+                    // Unsuspend
+                    user.status = 'active';
+                    showToast(`User ${userId} unsuspended`, 'success');
+                } else {
+                    // Suspend
+                    user.status = 'suspended';
+                    showToast(`User ${userId} suspended`, 'warning');
+                }
+                renderUsers();
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.style.cssText = `position: fixed; top: 20px; right: 20px; background: ${type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6'}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; animation: slideIn 0.3s ease;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function saveUser() {
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const phone = document.getElementById('newUserPhone').value;
+            const balance = parseFloat(document.getElementById('newUserBalance').value) || 0;
+
+            if (!name || !email || !phone) {
+                showToast('Please fill all fields', 'danger');
+                return;
+            }
+
+            const newUser = {
+                id: `USR${(sampleUsers.length + 1).toString().padStart(3, '0')}`,
+                name,
+                email,
+                phone,
+                balance,
+                status: 'active',
+                joined: new Date().toISOString()
+            };
+
+            sampleUsers.push(newUser);
+            showToast('User created successfully!', 'success');
+            closeAddUserModal();
+            renderUsers();
+        }
+
+        function saveEditUser() {
+            const userId = document.getElementById('editUserId').value;
+            const user = sampleUsers.find(u => u.id === userId);
+            
+            if (user) {
+                user.name = document.getElementById('editUserName').value;
+                user.email = document.getElementById('editUserEmail').value;
+                user.phone = document.getElementById('editUserPhone').value;
+                user.status = document.getElementById('editUserStatus').value;
+                
+                showToast('User updated successfully!', 'success');
+                closeEditUserModal();
+                renderUsers();
+            }
+        }
+
+        function saveFundUser() {
+            const userId = document.getElementById('fundUserId').value;
+            const amount = parseFloat(document.getElementById('fundAmount').value);
+            
+            if (!amount || amount <= 0) {
+                showToast('Please enter valid amount', 'danger');
+                return;
+            }
+            
+            const user = sampleUsers.find(u => u.id === userId);
+            if (user) {
+                user.balance += amount;
+                showToast(`₦${amount.toLocaleString()} funded to ${user.name}`, 'success');
+                closeFundUserModal();
+                renderUsers();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminLogged');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initial render
+        renderUsers();
+    </script>
+</body>
+</html>
