@@ -310,6 +310,32 @@
                             <div class="summary-card-icon">✕</div>
                         </div>
                     </div>
+
+                    <div class="summary-card success">
+                        <div class="summary-card-header">
+                            <div>
+                                <div class="summary-card-title">Daily Funding</div>
+                                <div class="summary-card-value">₦1.2M</div>
+                                <div class="summary-card-change positive">↑ 18% from yesterday</div>
+                            </div>
+                            <div class="summary-card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-card warning">
+                        <div class="summary-card-header">
+                            <div>
+                                <div class="summary-card-title">Daily Sales</div>
+                                <div class="summary-card-value">₦2.8M</div>
+                                <div class="summary-card-change positive">↑ 25% from yesterday</div>
+                            </div>
+                            <div class="summary-card-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"/></svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- NOTIFICATION SETTINGS -->
@@ -369,6 +395,89 @@
                     </div>
                     
                     <button class="btn btn-primary" onclick="saveNotificationPreferences()">Save Preferences</button>
+                </div>
+
+                <!-- REFERRAL MANAGEMENT -->
+                <div style="background: var(--white); border: 1px solid var(--border-lighter); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-xl); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 18px; font-weight: 600; margin-bottom: var(--spacing-lg); color: var(--text-dark);">Referral Management</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                        <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md);">
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-sm);">Referral Bonus Amount</label>
+                            <div style="display: flex; gap: var(--spacing-sm);">
+                                <input type="number" id="referralBonus" value="500" style="flex: 1; padding: var(--spacing-sm); border: 1px solid var(--border-lighter); border-radius: var(--radius-md); font-size: 14px;" placeholder="Amount in Naira">
+                                <button class="btn btn-primary" onclick="saveReferralBonus()" style="flex-shrink: 0;">Save</button>
+                            </div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-sm);">Amount awarded per successful referral</p>
+                        </div>
+
+                        <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md);">
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-sm);">Total Referral Bonuses Paid</label>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-dark);">₦45,250</div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-sm);">↑ 12 referrals this month</p>
+                        </div>
+
+                        <div style="background: var(--bg-light-secondary); padding: var(--spacing-lg); border-radius: var(--radius-md);">
+                            <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-sm);">Active Referrers</label>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-dark);">284</div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-top: var(--spacing-sm);">Users with active referrals</p>
+                        </div>
+                    </div>
+
+                    <details style="border-top: 1px solid var(--border-lighter); padding-top: var(--spacing-lg);">
+                        <summary style="cursor: pointer; font-weight: 600; color: var(--text-dark); padding: var(--spacing-md); background: var(--bg-light-secondary); border-radius: var(--radius-md); user-select: none;">📋 View Referral Tracking (Top 10)</summary>
+                        
+                        <div style="margin-top: var(--spacing-lg); overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                <thead style="background: var(--bg-light-secondary); border-bottom: 2px solid var(--border-lighter);">
+                                    <tr>
+                                        <th style="padding: var(--spacing-md); text-align: left; font-weight: 600; color: var(--text-dark);">Referrer</th>
+                                        <th style="padding: var(--spacing-md); text-align: left; font-weight: 600; color: var(--text-dark);">Referred User</th>
+                                        <th style="padding: var(--spacing-md); text-align: left; font-weight: 600; color: var(--text-dark);">Status</th>
+                                        <th style="padding: var(--spacing-md); text-align: left; font-weight: 600; color: var(--text-dark);">Bonus Earned</th>
+                                        <th style="padding: var(--spacing-md); text-align: left; font-weight: 600; color: var(--text-dark);">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-lighter);">
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">John Doe (ID: U001)</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Jane Smith</td>
+                                        <td style="padding: var(--spacing-md);"><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: 500;">✓ Active</span></td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark); font-weight: 600;">₦500</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-light);">2024-01-15</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-lighter);">
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Sarah Johnson (ID: U045)</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Mike Brown</td>
+                                        <td style="padding: var(--spacing-md);"><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: 500;">✓ Active</span></td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark); font-weight: 600;">₦500</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-light);">2024-01-14</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-lighter);">
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">David Lee (ID: U089)</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Emma Davis</td>
+                                        <td style="padding: var(--spacing-md);"><span style="background: #FFF3E0; color: #E65100; padding: 4px 8px; border-radius: 4px; font-weight: 500;">⏳ Pending</span></td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark); font-weight: 600;">-</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-light);">2024-01-13</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-lighter);">
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Lisa Chen (ID: U112)</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Robert Taylor</td>
+                                        <td style="padding: var(--spacing-md);"><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: 500;">✓ Active</span></td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark); font-weight: 600;">₦500</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-light);">2024-01-12</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-lighter);">
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Alex Martinez (ID: U156)</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark);">Patricia White</td>
+                                        <td style="padding: var(--spacing-md);"><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-weight: 500;">✓ Active</span></td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-dark); font-weight: 600;">₦500</td>
+                                        <td style="padding: var(--spacing-md); color: var(--text-light);">2024-01-11</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- CHARTS SECTION -->
@@ -555,6 +664,17 @@
                 localStorage.removeItem('adminLogged');
                 window.location.href = 'login.html';
             }
+        }
+
+        // Save Referral Bonus
+        function saveReferralBonus() {
+            const bonusAmount = document.getElementById('referralBonus').value;
+            if (!bonusAmount || bonusAmount < 0) {
+                showToast('Please enter a valid bonus amount', 'error');
+                return;
+            }
+            localStorage.setItem('referral_bonus_amount', bonusAmount);
+            showToast('✅ Referral bonus amount saved: ₦' + bonusAmount, 'success');
         }
     </script>
 </body>

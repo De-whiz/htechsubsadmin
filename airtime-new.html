@@ -378,7 +378,7 @@
 
                 <!-- INFO BOX -->
                 <div class="info-box">
-                    💡 Configure MARKUP PERCENT for airtime providers (not fixed price). This allows automatic calculation for any amount. For example: 10% markup on ₦1000 cost = ₦1100 selling price.
+                    💡 Configure pricing for airtime providers. All changes across all providers can be saved with a single bulk save button.
                 </div>
 
                 <!-- AIRTIME PROVIDERS SECTION -->
@@ -403,12 +403,12 @@
             window.location.href = 'login.html';
         }
 
-        // Demo airtime providers data - MARKUP PERCENT based
+        // Demo airtime providers data
         const airtimeProviders = [
-            { id: 'mtn', name: 'MTN Nigeria', enabled: true, level1_markup_percent: 5, level2_markup_percent: 3 },
-            { id: 'glo', name: 'Glo Mobile', enabled: true, level1_markup_percent: 6, level2_markup_percent: 4 },
-            { id: 'airtel', name: 'Airtel Nigeria', enabled: true, level1_markup_percent: 5.5, level2_markup_percent: 3.5 },
-            { id: '9mobile', name: '9mobile', enabled: true, level1_markup_percent: 7, level2_markup_percent: 5 }
+            { id: 'mtn', name: 'MTN Nigeria', enabled: true, level1_price: 100, level2_price: 98, costPrice: 96 },
+            { id: 'glo', name: 'Glo Mobile', enabled: true, level1_price: 102, level2_price: 100, costPrice: 98 },
+            { id: 'airtel', name: 'Airtel Nigeria', enabled: true, level1_price: 105, level2_price: 103, costPrice: 100 },
+            { id: '9mobile', name: '9mobile', enabled: true, level1_price: 106, level2_price: 104, costPrice: 101 }
         ];
 
         function renderAirtimeProviders() {
@@ -424,66 +424,23 @@
                         </div>
 
                         <div class="form-field">
-                            <label class="form-field-label">Level 1 Markup Percent (%)</label>
-                            <input type="number" class="form-input-field" id="l1_${provider.id}" value="${provider.level1_markup_percent}" step="0.1" min="0">
+                            <label class="form-field-label">Level 1 Price (₦)</label>
+                            <input type="number" class="form-input-field" id="l1_${provider.id}" value="${provider.level1_price}" step="1">
                         </div>
 
                         <div class="form-field">
-                            <label class="form-field-label">Level 2 Markup Percent (%)</label>
-                            <input type="number" class="form-input-field" id="l2_${provider.id}" value="${provider.level2_markup_percent}" step="0.1" min="0">
+                            <label class="form-field-label">Level 2 Price (₦)</label>
+                            <input type="number" class="form-input-field" id="l2_${provider.id}" value="${provider.level2_price}" step="1">
                         </div>
 
-                        <div style="background: var(--bg-light-secondary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-top: var(--spacing-md);">
-                            <div style="font-size: 12px; color: var(--text-light); margin-bottom: 6px;">Example: ₦1000 cost</div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm);">
-                                <div>
-                                    <div style="font-size: 10px; color: var(--text-light);">Level 1 Price</div>
-                                    <div style="font-size: 14px; font-weight: 600; color: var(--primary-purple);">₦<span id="calc_l1_${provider.id}">1050</span></div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 10px; color: var(--text-light);">Level 2 Price</div>
-                                    <div style="font-size: 14px; font-weight: 600; color: var(--success);">₦<span id="calc_l2_${provider.id}">1030</span></div>
-                                </div>
-                            </div>
+                        <div class="form-field">
+                            <label class="form-field-label">Cost Price (₦)</label>
+                            <input type="number" class="form-input-field" id="cost_${provider.id}" value="${provider.costPrice}" step="1">
                         </div>
                     </div>
                 `;
                 container.innerHTML += html;
             });
-
-            // Attach change listeners for auto-calculation
-            airtimeProviders.forEach(provider => {
-                const l1Input = document.getElementById(`l1_${provider.id}`);
-                const l2Input = document.getElementById(`l2_${provider.id}`);
-                
-                if (l1Input) {
-                    l1Input.addEventListener('input', () => {
-                        provider.level1_markup_percent = parseFloat(l1Input.value || 0);
-                        updateCalculation(provider.id);
-                    });
-                }
-                if (l2Input) {
-                    l2Input.addEventListener('input', () => {
-                        provider.level2_markup_percent = parseFloat(l2Input.value || 0);
-                        updateCalculation(provider.id);
-                    });
-                }
-            });
-        }
-
-        function updateCalculation(providerId) {
-            const provider = airtimeProviders.find(p => p.id === providerId);
-            if (provider) {
-                const costExample = 1000;
-                const l1Price = costExample + (costExample * provider.level1_markup_percent / 100);
-                const l2Price = costExample + (costExample * provider.level2_markup_percent / 100);
-                
-                const l1Calc = document.getElementById(`calc_l1_${providerId}`);
-                const l2Calc = document.getElementById(`calc_l2_${providerId}`);
-                
-                if (l1Calc) l1Calc.textContent = Math.round(l1Price);
-                if (l2Calc) l2Calc.textContent = Math.round(l2Price);
-            }
         }
 
         function toggleAirtimeProvider(providerId) {
@@ -500,13 +457,14 @@
                     id: provider.id,
                     name: provider.name,
                     enabled: provider.enabled,
-                    level1_markup_percent: parseFloat(document.getElementById(`l1_${provider.id}`)?.value || provider.level1_markup_percent),
-                    level2_markup_percent: parseFloat(document.getElementById(`l2_${provider.id}`)?.value || provider.level2_markup_percent)
+                    level1_price: parseFloat(document.getElementById(`l1_${provider.id}`)?.value || provider.level1_price),
+                    level2_price: parseFloat(document.getElementById(`l2_${provider.id}`)?.value || provider.level2_price),
+                    costPrice: parseFloat(document.getElementById(`cost_${provider.id}`)?.value || provider.costPrice)
                 };
             });
 
             localStorage.setItem('airtime_prices', JSON.stringify(updates));
-            showToast('✅ All airtime markup percentages saved successfully!', 'success');
+            showToast('✅ All airtime prices saved successfully!', 'success');
         }
 
         function resetAllAirtimePrices() {

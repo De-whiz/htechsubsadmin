@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Providers - HTECHSUBS Admin Panel</title>
+    <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        .provider-rank-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .rank-primary { background: #C4EBFF; color: #0066CC; }
+        .rank-secondary { background: #E0E9FF; color: #4D5BA3; }
+        .rank-tertiary { background: #F0E6FF; color: #6C3BFF; }
+        .rank-backup { background: #FFE4E4; color: #CC0000; }
+        
+        .provider-card {
+            padding: var(--spacing-lg);
+            background: var(--bg-light-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            border: 2px solid var(--border-lighter);
+            transition: all 0.3s ease;
+        }
+        .provider-card:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(108, 59, 255, 0.1);
+        }
+        .provider-card.disabled {
+            opacity: 0.6;
+        }
+        
+        .provider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .provider-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .provider-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .status-online { background: #10B981; }
+        .status-offline { background: #EF4444; }
+        
+        .history-item {
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border-left: 4px solid var(--primary-purple);
+            font-size: 12px;
+        }
+        .history-item.success { border-left-color: var(--success); }
+        .history-item.error { border-left-color: var(--danger); }
+        
+        .rank-selector {
+            display: inline-block;
+            background: white;
+            border: 1px solid var(--border-lighter);
+            border-radius: 6px;
+            padding: 4px;
+        }
+        .rank-selector select {
+            border: none;
+            background: transparent;
+            padding: 4px 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        
+        .toggle-switch {
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            background: var(--border-lighter);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .toggle-switch.active {
+            background: var(--success);
+        }
+        .toggle-switch::after {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s ease;
+        }
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo">HT</div><div class="sidebar-header-text"><h2>HTECHSUBS</h2><p>Admin Panel</p></div></div>
+            <nav class="sidebar-menu">
+                <!-- Main -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Main</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="index.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Management -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Management</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="users.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="transactions.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-2.16-2.66c-.44-.53-1.25-.53-1.69 0-.45.54-.45 1.47 0 2.01l3 3.68c.44.53 1.25.53 1.69 0l4.15-5.16c.44-.53.44-1.47 0-2.01-.45-.54-1.25-.54-1.69 0z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Transactions</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Services</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="#" class="sidebar-menu-link" onclick="toggleSubmenu(event, 'dataSubmenu')">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Data Services</span>
+                                <button class="sidebar-menu-toggle">▼</button>
+                            </a>
+                            <ul class="sidebar-menu-submenu" id="dataSubmenu" style="list-style: none;">
+                                <li class="sidebar-menu-item">
+                                    <a href="data-plans.html" class="sidebar-menu-link">Data Plans</a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a href="pricing.html" class="sidebar-menu-link">Pricing</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="airtime.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Airtime</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="cable-electricity.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 6h-2v3h2V6zm0 4h-2v3h2v-3zM3 6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2H3zm2 10h14v4H5v-4zm0-5h14v3H5v-3z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Cable & Electricity</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="exam-checkers.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1zm0 20c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Exam Checkers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="nin-services.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">NIN Services</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="cac-services.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">CAC Services</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Other -->
+                <div class="sidebar-menu-group">
+                    <div class="sidebar-menu-group-title">Other</div>
+                    <ul style="list-style: none;">
+                        <li class="sidebar-menu-item">
+                            <a href="api-management.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">API Management</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="api-providers.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">API Providers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="notifications.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Notifications</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="reports.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Reports</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a href="settings.html" class="sidebar-menu-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                                </svg>
+                                <span class="sidebar-menu-link-text">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </aside>
+        <div class="main-content">
+            <nav class="navbar"><div class="navbar-left"><button class="navbar-toggle-btn" id="sidebarToggle">☰</button><div class="navbar-breadcrumb"><a href="index.html">Dashboard</a><span>/</span><a href="api-providers.html">API Providers</a></div></div><div class="navbar-right"><div class="navbar-search"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/></svg><input type="text" placeholder="Search..."></div><div class="navbar-actions"><button class="navbar-action-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><span class="notification-badge">5</span></button><button class="navbar-action-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14,12.94c.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.64l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.64l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.5 -0.12,-0.64L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/></svg></button><button class="navbar-action-btn" onclick="logout()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button></div></div></nav>
+            <div class="content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+                    <div>
+                        <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-sm);">API Providers Management</h1>
+                        <p style="color: var(--text-light); font-size: 14px;">Configure and manage API providers with fallback support</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddProviderModal()">➕ Add Provider</button>
+                </div>
+
+                <div id="providersContainer"></div>
+
+                <!-- Active Provider Summary -->
+                <div class="card" style="padding: var(--spacing-lg); margin-top: var(--spacing-lg); background: linear-gradient(135deg, var(--primary-purple) 0%, rgba(108, 59, 255, 0.1) 100%);">
+                    <h3 style="color: var(--text-dark); margin-bottom: var(--spacing-md); font-size: 16px; font-weight: 600;">Provider Fallback Chain</h3>
+                    <div id="fallbackChain" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-md);">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Provider Modal -->
+    <div id="providerModal" class="modal" onclick="if(event.target === this) closeProviderModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; overflow-y: auto;">
+        <div class="card" style="width: 90%; max-width: 500px; margin: 20px auto;">
+            <div style="padding: var(--spacing-lg); border-bottom: 1px solid var(--border-lighter);">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 600; color: var(--text-dark);">Add API Provider</h2>
+            </div>
+            <div style="padding: var(--spacing-lg);">
+                <div style="margin-bottom: var(--spacing-md);">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-dark); font-size: 13px;">Provider Name</label>
+                    <input type="text" id="providerName" placeholder="e.g., API Provider One" class="pricing-input" style="width: 100%;">
+                </div>
+                <div style="margin-bottom: var(--spacing-md);">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-dark); font-size: 13px;">API Endpoint</label>
+                    <input type="text" id="providerEndpoint" placeholder="https://api.provider.com" class="pricing-input" style="width: 100%;">
+                </div>
+                <div style="margin-bottom: var(--spacing-md);">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-dark); font-size: 13px;">API Key</label>
+                    <input type="password" id="providerApiKey" placeholder="••••••••••" class="pricing-input" style="width: 100%;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                    <div>
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-dark); font-size: 13px;">Provider Type</label>
+                        <select id="providerType" class="pricing-input" style="width: 100%;">
+                            <option value="data">Data</option>
+                            <option value="airtime">Airtime</option>
+                            <option value="cable">Cable/Electricity</option>
+                            <option value="exam">Exam Tokens</option>
+                            <option value="nin">NIN Services</option>
+                            <option value="cac">CAC Services</option>
+                            <option value="all">All Services</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-dark); font-size: 13px;">Priority</label>
+                        <select id="providerPriority" class="pricing-input" style="width: 100%;">
+                            <option value="primary">Primary</option>
+                            <option value="secondary">Secondary</option>
+                            <option value="tertiary">Tertiary</option>
+                            <option value="backup">Backup</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="section-actions" style="padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter); background: var(--bg-light-secondary);">
+                <button class="btn btn-secondary" onclick="closeProviderModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProvider()">Save Provider</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-functions.js"></script>
+    <script>
+        if(localStorage.getItem('adminLogged')!=='true'){window.location.href='login.html';}
+
+        let providers = JSON.parse(localStorage.getItem('api_providers')) || [
+            { id: 1, name: 'Primary API Co', endpoint: 'https://api1.provider.com', apiKey: 'key123', type: 'all', priority: 'primary', enabled: true, successCount: 1250, failureCount: 3, lastUsed: new Date().toISOString(), history: [] },
+            { id: 2, name: 'Secondary API Services', endpoint: 'https://api2.provider.com', apiKey: 'key456', type: 'all', priority: 'secondary', enabled: true, successCount: 450, failureCount: 12, lastUsed: new Date(Date.now() - 3600000).toISOString(), history: [] },
+            { id: 3, name: 'Backup API Hub', endpoint: 'https://api3.provider.com', apiKey: 'key789', type: 'all', priority: 'tertiary', enabled: false, successCount: 150, failureCount: 8, lastUsed: new Date(Date.now() - 86400000).toISOString(), history: [] }
+        ];
+
+        function renderProviders() {
+            const container = document.getElementById('providersContainer');
+            const sorted = [...providers].sort((a, b) => {
+                const priorityOrder = { primary: 0, secondary: 1, tertiary: 2, backup: 3 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            });
+
+            container.innerHTML = sorted.map(p => `
+                <div class="provider-card ${!p.enabled ? 'disabled' : ''}">
+                    <div class="provider-header">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="status-indicator ${p.enabled ? 'status-online' : 'status-offline'}"></span>
+                                <span class="provider-name">${p.name}</span>
+                                <span class="provider-rank-badge rank-${p.priority}">
+                                    ${p.priority.toUpperCase()}
+                                </span>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">
+                                ${p.endpoint} • Type: <strong>${p.type}</strong>
+                            </div>
+                        </div>
+                        <div class="provider-controls">
+                            <div class="rank-selector">
+                                <select onchange="changePriority(${p.id}, this.value)" style="color: var(--text-dark);">
+                                    <option value="primary" ${p.priority === 'primary' ? 'selected' : ''}>Primary</option>
+                                    <option value="secondary" ${p.priority === 'secondary' ? 'selected' : ''}>Secondary</option>
+                                    <option value="tertiary" ${p.priority === 'tertiary' ? 'selected' : ''}>Tertiary</option>
+                                    <option value="backup" ${p.priority === 'backup' ? 'selected' : ''}>Backup</option>
+                                </select>
+                            </div>
+                            <div class="toggle-switch ${p.enabled ? 'active' : ''}" onclick="toggleProvider(${p.id})"></div>
+                            <button class="btn btn-secondary btn-sm" onclick="editProvider(${p.id})">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteProvider(${p.id})">Delete</button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                        <div style="background: white; padding: var(--spacing-md); border-radius: 6px; text-align: center;">
+                            <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Success Rate</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--success);">${Math.round((p.successCount / (p.successCount + p.failureCount)) * 100)}%</div>
+                            <div style="font-size: 11px; color: var(--text-light); margin-top: 4px;">${p.successCount}/${p.successCount + p.failureCount} transactions</div>
+                        </div>
+                        <div style="background: white; padding: var(--spacing-md); border-radius: 6px; text-align: center;">
+                            <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Last Used</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text-dark);">${formatDate(p.lastUsed)}</div>
+                        </div>
+                        <div style="background: white; padding: var(--spacing-md); border-radius: 6px;">
+                            <div style="font-size: 12px; color: var(--text-light); margin-bottom: 6px;">Recent History</div>
+                            <div id="history-${p.id}" style="max-height: 80px; overflow-y: auto;">
+                                ${(p.history || []).slice(-3).reverse().map((h, i) => `
+                                    <div class="history-item ${h.success ? 'success' : 'error'}" style="font-size: 11px;">
+                                        ${h.timestamp} - ${h.message}
+                                    </div>
+                                `).join('') || '<div style="font-size: 11px; color: var(--text-light);">No history yet</div>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            renderFallbackChain();
+        }
+
+        function renderFallbackChain() {
+            const chain = document.getElementById('fallbackChain');
+            const enabled = providers.filter(p => p.enabled).sort((a, b) => {
+                const priorityOrder = { primary: 0, secondary: 1, tertiary: 2, backup: 3 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            });
+
+            chain.innerHTML = enabled.map((p, i) => `
+                <div style="background: white; padding: var(--spacing-md); border-radius: 6px; text-align: center; border: 2px solid var(--border-lighter);">
+                    <div style="font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 4px; font-weight: 600;">Step ${i + 1}</div>
+                    <div style="font-size: 14px; font-weight: 600; color: var(--primary-purple); margin-bottom: 4px;">${p.priority.toUpperCase()}</div>
+                    <div style="font-size: 12px; color: var(--text-dark); word-break: break-word;">${p.name}</div>
+                </div>
+            `).join('');
+
+            if (enabled.length === 0) {
+                chain.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: var(--spacing-lg);">No active providers enabled</div>';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
+        }
+
+        function toggleProvider(id) {
+            const provider = providers.find(p => p.id === id);
+            if (provider) {
+                provider.enabled = !provider.enabled;
+                saveProviders();
+                renderProviders();
+                showToast(`Provider ${provider.enabled ? 'enabled' : 'disabled'}`, 'info');
+            }
+        }
+
+        function changePriority(id, newPriority) {
+            const provider = providers.find(p => p.id === id);
+            if (provider) {
+                provider.priority = newPriority;
+                saveProviders();
+                renderProviders();
+                showToast('Priority updated', 'success');
+            }
+        }
+
+        function showAddProviderModal() {
+            document.getElementById('providerName').value = '';
+            document.getElementById('providerEndpoint').value = '';
+            document.getElementById('providerApiKey').value = '';
+            document.getElementById('providerType').value = 'all';
+            document.getElementById('providerPriority').value = 'primary';
+            document.getElementById('providerModal').style.display = 'flex';
+        }
+
+        function closeProviderModal() {
+            document.getElementById('providerModal').style.display = 'none';
+        }
+
+        function saveProvider() {
+            const name = document.getElementById('providerName').value.trim();
+            const endpoint = document.getElementById('providerEndpoint').value.trim();
+            const apiKey = document.getElementById('providerApiKey').value.trim();
+            const type = document.getElementById('providerType').value;
+            const priority = document.getElementById('providerPriority').value;
+
+            if (!name || !endpoint || !apiKey) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+
+            const newProvider = {
+                id: Date.now(),
+                name,
+                endpoint,
+                apiKey,
+                type,
+                priority,
+                enabled: true,
+                successCount: 0,
+                failureCount: 0,
+                lastUsed: new Date().toISOString(),
+                history: []
+            };
+
+            providers.push(newProvider);
+            saveProviders();
+            renderProviders();
+            closeProviderModal();
+            showToast('✅ Provider added successfully!', 'success');
+        }
+
+        function editProvider(id) {
+            const provider = providers.find(p => p.id === id);
+            if (provider) {
+                document.getElementById('providerName').value = provider.name;
+                document.getElementById('providerEndpoint').value = provider.endpoint;
+                document.getElementById('providerApiKey').value = provider.apiKey;
+                document.getElementById('providerType').value = provider.type;
+                document.getElementById('providerPriority').value = provider.priority;
+                document.getElementById('providerModal').style.display = 'flex';
+            }
+        }
+
+        function deleteProvider(id) {
+            if (confirm('Are you sure you want to delete this provider?')) {
+                providers = providers.filter(p => p.id !== id);
+                saveProviders();
+                renderProviders();
+                showToast('Provider deleted', 'info');
+            }
+        }
+
+        function saveProviders() {
+            localStorage.setItem('api_providers', JSON.stringify(providers));
+            // Also save to transaction API mapping
+            localStorage.setItem('api_provider_active', JSON.stringify(providers.find(p => p.priority === 'primary' && p.enabled)));
+        }
+
+        // Simulate API usage for demo
+        function recordApiUsage(providerId, success, message) {
+            const provider = providers.find(p => p.id === providerId);
+            if (provider) {
+                if (success) {
+                    provider.successCount++;
+                } else {
+                    provider.failureCount++;
+                }
+                provider.lastUsed = new Date().toISOString();
+                provider.history.push({
+                    timestamp: new Date().toLocaleTimeString(),
+                    success,
+                    message
+                });
+                if (provider.history.length > 20) {
+                    provider.history.shift();
+                }
+                saveProviders();
+                renderProviders();
+            }
+        }
+
+        // Initialize
+        renderProviders();
+    </script>
+</body>
+</html>

@@ -439,7 +439,7 @@
     <div class="modal" id="fundUserModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Fund User Account</h2>
+                <h2>Fund / Debit User Account</h2>
                 <button class="modal-close-btn" onclick="closeFundUserModal()">x</button>
             </div>
 
@@ -457,20 +457,27 @@
                     <div style="font-weight: 600; font-size: 16px; color: var(--success);" id="fundUserCurrentBalance">₦45,500</div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Amount to Fund (₦)</label>
-                    <input type="number" class="form-input" id="fundAmount" placeholder="Enter amount" step="100">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <div class="form-group">
+                        <label class="form-label">Amount to Fund (₦)</label>
+                        <input type="number" class="form-input" id="fundAmount" placeholder="0.00" step="100" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Amount to Debit (₦)</label>
+                        <input type="number" class="form-input" id="debitAmount" placeholder="0.00" step="100" min="0">
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Reference/Note</label>
-                    <textarea class="form-input" placeholder="Optional note..." style="resize: vertical; height: 80px;"></textarea>
+                    <textarea class="form-input" id="fundNote" placeholder="Optional note..." style="resize: vertical; height: 80px;"></textarea>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeFundUserModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="saveFundUser()">Fund Account</button>
+                <button class="btn btn-primary" onclick="saveFundUser()">Apply Changes</button>
             </div>
         </div>
     </div>
@@ -552,10 +559,10 @@
                     <td>${new Date(user.joined).toLocaleDateString()}</td>
                     <td>
                         <div class="table-actions">
-                            <button class="table-action-btn" onclick="viewUser('${user.id}')" title="View">👁️</button>
-                            <button class="table-action-btn" onclick="editUser('${user.id}')" title="Edit">✏️</button>
-                            <button class="table-action-btn" onclick="fundUser('${user.id}')" title="Fund">💰</button>
-                            <button class="table-action-btn delete" onclick="suspendUser('${user.id}')" title="Suspend">🚫</button>
+                            <button class="table-action-btn" onclick="viewUser('${user.id}')" title="View">👁️ View</button>
+                            <button class="table-action-btn" onclick="editUser('${user.id}')" title="Edit">✏️ Edit</button>
+                            <button class="table-action-btn" onclick="fundUser('${user.id}')" title="Fund">💰 Fund</button>
+                            <button class="table-action-btn delete" onclick="suspendUser('${user.id}')" title="Suspend">🚫 Suspend</button>
                         </div>
                     </td>
                 `;
@@ -655,6 +662,8 @@
                 document.getElementById('fundUserEmail').textContent = user.email;
                 document.getElementById('fundUserCurrentBalance').textContent = `₦${user.balance.toLocaleString()}`;
                 document.getElementById('fundAmount').value = '';
+                document.getElementById('debitAmount').value = '';
+                document.getElementById('fundNote').value = '';
                 modal.classList.add('active');
             }
         }
@@ -732,17 +741,34 @@
 
         function saveFundUser() {
             const userId = document.getElementById('fundUserId').value;
-            const amount = parseFloat(document.getElementById('fundAmount').value);
+            const fundAmount = parseFloat(document.getElementById('fundAmount').value) || 0;
+            const debitAmount = parseFloat(document.getElementById('debitAmount').value) || 0;
             
-            if (!amount || amount <= 0) {
-                showToast('Please enter valid amount', 'danger');
+            if (fundAmount <= 0 && debitAmount <= 0) {
+                showToast('Please enter valid amount for fund or debit', 'danger');
                 return;
             }
             
             const user = sampleUsers.find(u => u.id === userId);
             if (user) {
-                user.balance += amount;
-                showToast(`₦${amount.toLocaleString()} funded to ${user.name}`, 'success');
+                let details = [];
+                
+                if (fundAmount > 0) {
+                    user.balance += fundAmount;
+                    details.push(`Funded: ₦${fundAmount.toLocaleString()}`);
+                }
+                
+                if (debitAmount > 0) {
+                    if (user.balance >= debitAmount) {
+                        user.balance -= debitAmount;
+                        details.push(`Debited: ₦${debitAmount.toLocaleString()}`);
+                    } else {
+                        showToast('Insufficient balance for debit', 'danger');
+                        return;
+                    }
+                }
+                
+                showToast(`${details.join(' & ')} from ${user.name}`, 'success');
                 closeFundUserModal();
                 renderUsers();
             }

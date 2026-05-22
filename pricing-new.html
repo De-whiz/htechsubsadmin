@@ -442,25 +442,25 @@
         // Demo data
         const pricingData = {
             gifting: [
-                { id: 'gift1', name: 'MTN 1GB 1 Day', level1_markup: 10, level2_markup: 8, level1_price: 500, level2_price: 450, costPrice: 400 },
-                { id: 'gift2', name: 'Glo 2GB 2 Days', level1_markup: 12, level2_markup: 9, level1_price: 1000, level2_price: 900, costPrice: 800 },
-                { id: 'gift3', name: 'Airtel 5GB 7 Days', level1_markup: 15, level2_markup: 12, level1_price: 2000, level2_price: 1800, costPrice: 1600 },
-                { id: 'gift4', name: 'MTN 10GB 15 Days', level1_markup: 18, level2_markup: 15, level1_price: 3000, level2_price: 2700, costPrice: 2400 },
-                { id: 'gift5', name: 'Airtel 30GB 30 Days', level1_markup: 20, level2_markup: 17, level1_price: 5000, level2_price: 4500, costPrice: 4000 }
+                { id: 'gift1', name: 'Gifting Plan - Basic', level1_markup: 10, level2_markup: 8, level1_price: 500, level2_price: 450, costPrice: 400 },
+                { id: 'gift2', name: 'Gifting Plan - Standard', level1_markup: 12, level2_markup: 9, level1_price: 1000, level2_price: 900, costPrice: 800 },
+                { id: 'gift3', name: 'Gifting Plan - Premium', level1_markup: 15, level2_markup: 12, level1_price: 2000, level2_price: 1800, costPrice: 1600 },
+                { id: 'gift4', name: 'Gifting Plan - Deluxe', level1_markup: 18, level2_markup: 15, level1_price: 3000, level2_price: 2700, costPrice: 2400 },
+                { id: 'gift5', name: 'Gifting Plan - Elite', level1_markup: 20, level2_markup: 17, level1_price: 5000, level2_price: 4500, costPrice: 4000 }
             ],
             sme: [
-                { id: 'sme1', name: 'MTN 1GB 1 Day', level1_price: 1500, level2_price: 1350, level1_markup: 5, level2_markup: 3, costPrice: 1200 },
-                { id: 'sme2', name: 'Glo 2GB 2 Days', level1_price: 2500, level2_price: 2250, level1_markup: 6, level2_markup: 4, costPrice: 2000 },
-                { id: 'sme3', name: 'Airtel 5GB 7 Days', level1_price: 3500, level2_price: 3150, level1_markup: 7, level2_markup: 5, costPrice: 3000 },
-                { id: 'sme4', name: 'MTN 10GB 15 Days', level1_price: 5000, level2_price: 4500, level1_markup: 8, level2_markup: 6, costPrice: 4000 },
-                { id: 'sme5', name: 'Airtel 30GB 30 Days', level1_price: 7000, level2_price: 6300, level1_markup: 10, level2_markup: 8, costPrice: 5800 }
+                { id: 'sme1', name: 'SME Plan - Starter', level1_price: 1500, level2_price: 1350, level1_markup: 5, level2_markup: 3, costPrice: 1200 },
+                { id: 'sme2', name: 'SME Plan - Growth', level1_price: 2500, level2_price: 2250, level1_markup: 6, level2_markup: 4, costPrice: 2000 },
+                { id: 'sme3', name: 'SME Plan - Scale', level1_price: 3500, level2_price: 3150, level1_markup: 7, level2_markup: 5, costPrice: 3000 },
+                { id: 'sme4', name: 'SME Plan - Enterprise', level1_price: 5000, level2_price: 4500, level1_markup: 8, level2_markup: 6, costPrice: 4000 },
+                { id: 'sme5', name: 'SME Plan - Unlimited', level1_price: 7000, level2_price: 6300, level1_markup: 10, level2_markup: 8, costPrice: 5800 }
             ],
             corporate: [
-                { id: 'corp1', name: 'MTN 1GB 1 Day', level1_price: 2000, level2_price: 1800, level1_markup: 8, level2_markup: 5, costPrice: 1500 },
-                { id: 'corp2', name: 'Glo 2GB 2 Days', level1_price: 3500, level2_price: 3150, level1_markup: 10, level2_markup: 7, costPrice: 2800 },
-                { id: 'corp3', name: 'Airtel 5GB 7 Days', level1_price: 5500, level2_price: 4950, level1_markup: 12, level2_markup: 9, costPrice: 4500 },
-                { id: 'corp4', name: 'MTN 10GB 15 Days', level1_price: 8000, level2_price: 7200, level1_markup: 15, level2_markup: 12, costPrice: 6500 },
-                { id: 'corp5', name: 'Airtel 30GB 30 Days', level1_price: 12000, level2_price: 10800, level1_markup: 18, level2_markup: 15, costPrice: 9500 }
+                { id: 'corp1', name: 'Corporate Plan - Basic', level1_price: 2000, level2_price: 1800, level1_markup: 8, level2_markup: 5, costPrice: 1500 },
+                { id: 'corp2', name: 'Corporate Plan - Professional', level1_price: 3500, level2_price: 3150, level1_markup: 10, level2_markup: 7, costPrice: 2800 },
+                { id: 'corp3', name: 'Corporate Plan - Executive', level1_price: 5500, level2_price: 4950, level1_markup: 12, level2_markup: 9, costPrice: 4500 },
+                { id: 'corp4', name: 'Corporate Plan - Premier', level1_price: 8000, level2_price: 7200, level1_markup: 15, level2_markup: 12, costPrice: 6500 },
+                { id: 'corp5', name: 'Corporate Plan - Platinum', level1_price: 12000, level2_price: 10800, level1_markup: 18, level2_markup: 15, costPrice: 9500 }
             ]
         };
 
@@ -483,112 +483,50 @@
                             ${isGifting ? `
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 1 Markup (%)</label>
-                                    <input type="number" class="pricing-input markup-input" data-item="${item.id}" data-level="1" data-category="${category}" value="${item.level1_markup}" step="0.1">
+                                    <input type="number" class="pricing-input" id="markup_l1_${item.id}" value="${item.level1_markup}" step="0.1">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 2 Markup (%)</label>
-                                    <input type="number" class="pricing-input markup-input" data-item="${item.id}" data-level="2" data-category="${category}" value="${item.level2_markup}" step="0.1">
+                                    <input type="number" class="pricing-input" id="markup_l2_${item.id}" value="${item.level2_markup}" step="0.1">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Cost Price (₦)</label>
-                                    <input type="number" class="pricing-input cost-input" data-item="${item.id}" data-category="${category}" value="${item.costPrice}" step="10">
+                                    <input type="number" class="pricing-input" id="cost_${item.id}" value="${item.costPrice}" step="10">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 1 Price (₦)</label>
-                                    <input type="number" class="pricing-input price-input" id="price_l1_${item.id}" data-item="${item.id}" data-level="1" data-category="${category}" value="${item.level1_price}" step="10" readonly style="background-color: #f5f5f5;">
+                                    <input type="number" class="pricing-input" id="price_l1_${item.id}" value="${item.level1_price}" step="10">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 2 Price (₦)</label>
-                                    <input type="number" class="pricing-input price-input" id="price_l2_${item.id}" data-item="${item.id}" data-level="2" data-category="${category}" value="${item.level2_price}" step="10" readonly style="background-color: #f5f5f5;">
+                                    <input type="number" class="pricing-input" id="price_l2_${item.id}" value="${item.level2_price}" step="10">
                                 </div>
                             ` : `
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 1 Price (₦)</label>
-                                    <input type="number" class="pricing-input price-input" id="price_l1_${item.id}" data-item="${item.id}" data-level="1" data-category="${category}" value="${item.level1_price}" step="10">
+                                    <input type="number" class="pricing-input" id="price_l1_${item.id}" value="${item.level1_price}" step="10">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 2 Price (₦)</label>
-                                    <input type="number" class="pricing-input price-input" id="price_l2_${item.id}" data-item="${item.id}" data-level="2" data-category="${category}" value="${item.level2_price}" step="10">
+                                    <input type="number" class="pricing-input" id="price_l2_${item.id}" value="${item.level2_price}" step="10">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 1 Markup (%)</label>
-                                    <input type="number" class="pricing-input markup-input" data-item="${item.id}" data-level="1" data-category="${category}" value="${item.level1_markup}" step="0.1">
+                                    <input type="number" class="pricing-input" id="markup_l1_${item.id}" value="${item.level1_markup}" step="0.1">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Level 2 Markup (%)</label>
-                                    <input type="number" class="pricing-input markup-input" data-item="${item.id}" data-level="2" data-category="${category}" value="${item.level2_markup}" step="0.1">
+                                    <input type="number" class="pricing-input" id="markup_l2_${item.id}" value="${item.level2_markup}" step="0.1">
                                 </div>
                                 <div class="pricing-field">
                                     <label class="pricing-field-label">Cost Price (₦)</label>
-                                    <input type="number" class="pricing-input cost-input" data-item="${item.id}" data-category="${category}" value="${item.costPrice}" step="10">
+                                    <input type="number" class="pricing-input" id="cost_${item.id}" value="${item.costPrice}" step="10">
                                 </div>
                             `}
                         </div>
                     </div>
                 `;
                 container.innerHTML += html;
-            });
-
-            // Attach event listeners after rendering
-            attachPricingEventListeners(category);
-        }
-
-        function attachPricingEventListeners(category) {
-            const container = document.getElementById(category + 'Container');
-            
-            // Markup input listeners - when markup changes, update prices
-            container.querySelectorAll('.markup-input').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const itemId = e.target.dataset.item;
-                    const level = e.target.dataset.level;
-                    const costInput = container.querySelector(`.cost-input[data-item="${itemId}"]`);
-                    const costPrice = parseFloat(costInput?.value || 0);
-                    const markup = parseFloat(e.target.value || 0);
-                    const newPrice = costPrice + (costPrice * markup / 100);
-                    
-                    const priceInput = container.querySelector(`.price-input[data-item="${itemId}"][data-level="${level}"]`);
-                    if (priceInput) {
-                        priceInput.value = Math.round(newPrice);
-                    }
-                });
-            });
-
-            // Price input listeners - when price changes, update markup
-            container.querySelectorAll('.price-input:not([readonly])').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const itemId = e.target.dataset.item;
-                    const level = e.target.dataset.level;
-                    const costInput = container.querySelector(`.cost-input[data-item="${itemId}"]`);
-                    const costPrice = parseFloat(costInput?.value || 0);
-                    const price = parseFloat(e.target.value || 0);
-                    
-                    if (costPrice > 0) {
-                        const markup = ((price - costPrice) / costPrice * 100);
-                        const markupInput = container.querySelector(`.markup-input[data-item="${itemId}"][data-level="${level}"]`);
-                        if (markupInput) {
-                            markupInput.value = Math.round(markup * 10) / 10;
-                        }
-                    }
-                });
-            });
-
-            // Cost price listener - recalculate all prices for this item
-            container.querySelectorAll('.cost-input').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const itemId = e.target.dataset.item;
-                    const costPrice = parseFloat(e.target.value || 0);
-                    
-                    // Update both level 1 and level 2 prices based on their markups
-                    [1, 2].forEach(level => {
-                        const markupInput = container.querySelector(`.markup-input[data-item="${itemId}"][data-level="${level}"]`);
-                        const priceInput = container.querySelector(`.price-input[data-item="${itemId}"][data-level="${level}"]`);
-                        if (markupInput && priceInput) {
-                            const markup = parseFloat(markupInput.value || 0);
-                            const newPrice = costPrice + (costPrice * markup / 100);
-                            priceInput.value = Math.round(newPrice);
-                        }
-                    });
-                });
             });
         }
 
@@ -601,30 +539,14 @@
 
         function savePricingCategory(category) {
             const items = pricingData[category];
-            const container = document.getElementById(category + 'Container');
-            
             const updates = items.map(item => {
-                const level1Price = parseFloat(container.querySelector(`#price_l1_${item.id}`)?.value || item.level1_price);
-                const level2Price = parseFloat(container.querySelector(`#price_l2_${item.id}`)?.value || item.level2_price);
-                const level1Markup = parseFloat(container.querySelector(`.markup-input[data-item="${item.id}"][data-level="1"]`)?.value || item.level1_markup);
-                const level2Markup = parseFloat(container.querySelector(`.markup-input[data-item="${item.id}"][data-level="2"]`)?.value || item.level2_markup);
-                const costPrice = parseFloat(container.querySelector(`.cost-input[data-item="${item.id}"]`)?.value || item.costPrice);
-                
-                // Update the source data
-                item.level1_price = level1Price;
-                item.level2_price = level2Price;
-                item.level1_markup = level1Markup;
-                item.level2_markup = level2Markup;
-                item.costPrice = costPrice;
-                
                 return {
                     id: item.id,
-                    name: item.name,
-                    level1_price: level1Price,
-                    level2_price: level2Price,
-                    level1_markup: level1Markup,
-                    level2_markup: level2Markup,
-                    costPrice: costPrice
+                    level1_price: parseFloat(document.getElementById(`price_l1_${item.id}`)?.value || item.level1_price),
+                    level2_price: parseFloat(document.getElementById(`price_l2_${item.id}`)?.value || item.level2_price),
+                    level1_markup: parseFloat(document.getElementById(`markup_l1_${item.id}`)?.value || item.level1_markup),
+                    level2_markup: parseFloat(document.getElementById(`markup_l2_${item.id}`)?.value || item.level2_markup),
+                    costPrice: parseFloat(document.getElementById(`cost_${item.id}`)?.value || item.costPrice)
                 };
             });
 

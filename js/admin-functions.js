@@ -64,14 +64,14 @@ function showPopupNotification(title, message, type = 'info') {
         animation: slideInRight 0.3s ease;
     `;
     
-    let icon = '🔔';
-    if (type === 'success') icon = '✓';
-    if (type === 'error') icon = '✕';
-    if (type === 'warning') icon = '!';
+    let iconText = 'Info';
+    if (type === 'success') iconText = 'Success';
+    if (type === 'error') iconText = 'Error';
+    if (type === 'warning') iconText = 'Warning';
     
     notif.innerHTML = `
         <div style="display: flex; gap: 10px;">
-            <div style="font-size: 20px;">${icon}</div>
+            <div style="font-size: 12px; font-weight: 600; color: #64748B; min-width: 45px;">${iconText}</div>
             <div style="flex: 1;">
                 <h4 style="margin: 0 0 5px 0; color: #0F172A; font-weight: 600;">${title}</h4>
                 <p style="margin: 0; color: #64748B; font-size: 13px;">${message}</p>
