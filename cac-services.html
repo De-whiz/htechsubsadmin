@@ -5,6 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAC Services - HTECHSUBS Admin Panel</title>
     <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        .service-toggle {
+            width: 50px;
+            height: 26px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 13px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .service-toggle.enabled {
+            background: var(--success);
+        }
+
+        .service-toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: var(--white);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .service-toggle.enabled::after {
+            left: 26px;
+        }
+
+        .pricing-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .pricing-input {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-lighter);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        .pricing-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(108, 59, 255, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -182,22 +243,28 @@
                 id: 'cac_name_search', 
                 name: 'Company Name Search',
                 description: 'Check if a business name is available',
+                enabled: true,
                 costPrice: 400,
-                markupPercent: 25
+                level1: { markupPercent: 25 },
+                level2: { markupPercent: 20 }
             },
             { 
                 id: 'cac_registration', 
                 name: 'Business Registration',
                 description: 'Register a new business entity',
+                enabled: true,
                 costPrice: 1500,
-                markupPercent: 33
+                level1: { markupPercent: 33 },
+                level2: { markupPercent: 25 }
             },
             { 
                 id: 'cac_document_retrieval', 
                 name: 'Document Retrieval',
                 description: 'Get certified copies of business documents',
+                enabled: true,
                 costPrice: 1000,
-                markupPercent: 50
+                level1: { markupPercent: 50 },
+                level2: { markupPercent: 40 }
             }
         ];
 
@@ -213,43 +280,57 @@
                 <div class="card">
                     <div style="padding: var(--spacing-lg); border-bottom: 2px solid var(--border-lighter); margin-bottom: var(--spacing-lg);">
                         <h2 style="font-size: 20px; font-weight: 600; color: var(--text-dark); margin: 0;">🏢 CAC Services</h2>
-                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for all business registration services</p>
+                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for Level 1 and Level 2 users - one toggle per service</p>
                     </div>
 
                     <div style="padding: var(--spacing-lg);">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--spacing-lg);">
-                            ${services.map(service => `
-                                <div style="padding: var(--spacing-lg); background: var(--bg-light-secondary); border-radius: var(--radius-md); border: 2px solid var(--border-lighter);">
-                                    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--spacing-md);">
-                                        <div style="flex: 1;">
-                                            <div style="font-weight: 600; color: var(--text-dark); font-size: 16px;">${service.name}</div>
-                                            <div style="font-size: 13px; color: var(--text-light); margin-top: 4px;">${service.description}</div>
-                                        </div>
+                        ${services.map(service => `
+                            <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 2px solid var(--border-lighter);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                    <div>
+                                        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">${service.name}</h3>
+                                        <p style="font-size: 13px; color: var(--text-light); margin: 4px 0 0 0;">${service.description}</p>
                                     </div>
-                                    
-                                    <div style="background: white; padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                                    <button class="service-toggle enabled" onclick="toggleCACService('${service.id}')" title="Toggle service status"></button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-lg);">
+                                    <div style="padding: var(--spacing-md); background: var(--bg-light-secondary); border-radius: var(--radius-md);">
+                                        <div style="font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-md);">Level 1 Users</div>
+                                        <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-md);">
                                             <div>
                                                 <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px; font-weight: 500;">Cost Price</div>
-                                                <div style="font-size: 16px; font-weight: 600; color: var(--text-dark);">₦${service.costPrice.toLocaleString()}</div>
+                                                <div style="font-size: 14px; font-weight: 600; color: var(--text-dark);">₦${service.costPrice.toLocaleString()}</div>
+                                            </div>
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input cac-l1-markup" id="l1_markup_${service.id}" data-service-id="${service.id}" value="${service.level1.markupPercent}" step="0.1" min="0">
                                             </div>
                                             <div>
-                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px; font-weight: 500;">Current Selling Price</div>
-                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.markupPercent)).toLocaleString()}</span></div>
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px; font-weight: 500;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="cac-l1-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level1.markupPercent)).toLocaleString()}</span></div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="pricing-field">
-                                        <label class="pricing-label" style="margin-bottom: 6px;">Markup Percent</label>
-                                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                                            <input type="number" class="pricing-input cac-markup" id="markup_${service.id}" data-service-id="${service.id}" value="${service.markupPercent}" step="0.1" min="0" style="flex: 1;">
-                                            <div style="font-weight: 600; color: var(--primary-purple); width: 50px; text-align: right;" id="markup-display-${service.id}">${service.markupPercent}%</div>
+                                    <div style="padding: var(--spacing-md); background: var(--bg-light-secondary); border-radius: var(--radius-md);">
+                                        <div style="font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-md);">Level 2 Users</div>
+                                        <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-md);">
+                                            <div>
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px; font-weight: 500;">Cost Price</div>
+                                                <div style="font-size: 14px; font-weight: 600; color: var(--text-dark);">₦${service.costPrice.toLocaleString()}</div>
+                                            </div>
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input cac-l2-markup" id="l2_markup_${service.id}" data-service-id="${service.id}" value="${service.level2.markupPercent}" step="0.1" min="0">
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px; font-weight: 500;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="cac-l2-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level2.markupPercent)).toLocaleString()}</span></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            `).join('')}
-                        </div>
+                            </div>
+                        `).join('')}
                     </div>
 
                     <div class="section-actions" style="padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter); background: var(--bg-light-secondary); border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
@@ -264,24 +345,56 @@
         }
 
         function attachEventListeners() {
-            document.querySelectorAll('.cac-markup').forEach(input => {
+            document.querySelectorAll('.cac-l1-markup').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const serviceId = e.target.dataset.serviceId;
                     const service = services.find(s => s.id === serviceId);
                     if (service) {
                         const markup = parseFloat(e.target.value) || 0;
                         const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
-                        document.querySelector(`.selling-${serviceId}`).textContent = selling.toLocaleString();
-                        document.getElementById(`markup-display-${serviceId}`).textContent = markup + '%';
+                        document.querySelector(`.cac-l1-selling-${serviceId}`).textContent = selling.toLocaleString();
+                    }
+                });
+            });
+            document.querySelectorAll('.cac-l2-markup').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const serviceId = e.target.dataset.serviceId;
+                    const service = services.find(s => s.id === serviceId);
+                    if (service) {
+                        const markup = parseFloat(e.target.value) || 0;
+                        const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
+                        document.querySelector(`.cac-l2-selling-${serviceId}`).textContent = selling.toLocaleString();
                     }
                 });
             });
         }
 
+        function toggleCACService(serviceId) {
+            const service = services.find(s => s.id === serviceId);
+            if (service) {
+                service.enabled = !service.enabled;
+                renderServices();
+                const status = service.enabled ? 'enabled' : 'disabled';
+                showToast(`${service.name} ${status}`, service.enabled ? 'success' : 'warning');
+            }
+        }
+
+        function toggleCACService(serviceId) {
+            const service = services.find(s => s.id === serviceId);
+            if (service) {
+                service.enabled = !service.enabled;
+                renderServices();
+                const status = service.enabled ? 'enabled' : 'disabled';
+                showToast(`${service.name} ${status}`, service.enabled ? 'success' : 'warning');
+            }
+        }
+
         function saveAllServices() {
             services.forEach(service => {
-                const markup = parseFloat(document.getElementById(`markup_${service.id}`)?.value || service.markupPercent);
-                service.markupPercent = markup;
+                const l1Markup = parseFloat(document.getElementById(`l1_markup_${service.id}`)?.value || service.level1.markupPercent);
+                const l2Markup = parseFloat(document.getElementById(`l2_markup_${service.id}`)?.value || service.level2.markupPercent);
+                service.level1.markupPercent = l1Markup;
+                service.level2.markupPercent = l2Markup;
             });
             localStorage.setItem('cac_services_pricing', JSON.stringify(services));
             showToast('✅ All CAC services pricing saved successfully!', 'success');
@@ -290,6 +403,15 @@
         function resetServices() {
             renderServices();
             showToast('CAC services have been reset', 'info');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6';
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; font-weight: 600;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         // Initialize

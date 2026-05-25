@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIN Services - HTECHSUBS Admin Panel</title>
     <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        .service-card {
+            background: var(--white);
+            border: 1px solid var(--border-lighter);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .service-toggle {
+            width: 50px;
+            height: 26px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 13px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .service-toggle.enabled {
+            background: var(--success);
+        }
+
+        .service-toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: var(--white);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .service-toggle.enabled::after {
+            left: 26px;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -181,18 +221,21 @@
             { 
                 id: 'nin_verify', 
                 name: 'NIN Verification',
+                enabled: true,
                 level1: { costPrice: 400, markupPercent: 10 },
                 level2: { costPrice: 400, markupPercent: 7 }
             },
             { 
                 id: 'nin_slip', 
                 name: 'NIN Slip Printing',
+                enabled: true,
                 level1: { costPrice: 500, markupPercent: 12 },
                 level2: { costPrice: 500, markupPercent: 8 }
             },
             { 
                 id: 'nin_update', 
                 name: 'NIN Data Update',
+                enabled: true,
                 level1: { costPrice: 300, markupPercent: 15 },
                 level2: { costPrice: 300, markupPercent: 10 }
             }
@@ -214,22 +257,18 @@
                     </div>
 
                     <div style="padding: var(--spacing-lg);">
-                        <!-- Level 1 Users -->
-                        <div style="margin-bottom: var(--spacing-xl);">
-                            <div style="display: flex; align-items: center; margin-bottom: var(--spacing-md);">
-                                <div style="flex: 1;">
-                                    <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 1 Users</h3>
-                                    <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Regular and SME users</p>
+                        ${services.map(service => `
+                            <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 2px solid var(--border-lighter);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                    <div>
+                                        <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">${service.name}</h3>
+                                    </div>
+                                    <button class="service-toggle enabled" onclick="toggleNINService('${service.id}')" title="Toggle service status"></button>
                                 </div>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
-                                ${services.map(service => `
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg);">
                                     <div style="padding: var(--spacing-md); background: var(--bg-light-secondary); border-radius: var(--radius-md);">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
-                                            <div style="font-weight: 600; color: var(--text-dark);">${service.name}</div>
-                                            <div style="font-size: 12px; color: var(--text-light);">Cost: ₦${service.level1.costPrice.toLocaleString()}</div>
-                                        </div>
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+                                        <div style="font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-md);">Level 1 Users</div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
                                             <div class="pricing-field">
                                                 <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
                                                 <input type="number" class="pricing-input level1-markup" id="l1_markup_${service.id}" data-service-id="${service.id}" value="${service.level1.markupPercent}" step="0.1" min="0">
@@ -240,26 +279,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Level 2 Users -->
-                        <div style="margin-bottom: var(--spacing-xl); border-top: 2px solid var(--border-lighter); padding-top: var(--spacing-lg);">
-                            <div style="display: flex; align-items: center; margin-bottom: var(--spacing-md);">
-                                <div style="flex: 1;">
-                                    <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 2 Users</h3>
-                                    <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Corporate and Developers</p>
-                                </div>
-                            </div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
-                                ${services.map(service => `
                                     <div style="padding: var(--spacing-md); background: var(--bg-light-secondary); border-radius: var(--radius-md);">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
-                                            <div style="font-weight: 600; color: var(--text-dark);">${service.name}</div>
-                                            <div style="font-size: 12px; color: var(--text-light);">Cost: ₦${service.level2.costPrice.toLocaleString()}</div>
-                                        </div>
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+                                        <div style="font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; margin-bottom: var(--spacing-md);">Level 2 Users</div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
                                             <div class="pricing-field">
                                                 <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
                                                 <input type="number" class="pricing-input level2-markup" id="l2_markup_${service.id}" data-service-id="${service.id}" value="${service.level2.markupPercent}" step="0.1" min="0">
@@ -270,9 +292,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                `).join('')}
+                                </div>
                             </div>
-                        </div>
+                        `).join('')}
                     </div>
 
                     <div class="section-actions" style="padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter); background: var(--bg-light-secondary); border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
@@ -313,6 +335,28 @@
                 });
             });
         }
+
+        function toggleNINService(serviceId) {
+            const service = services.find(s => s.id === serviceId);
+            if (service) {
+                service.enabled = !service.enabled;
+                renderServices();
+                const status = service.enabled ? 'enabled' : 'disabled';
+                showToast(`${service.name} ${status}`, service.enabled ? 'success' : 'warning');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6';
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; font-weight: 600;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Initialize
+        renderServices();
 
         function saveAllServices() {
             services.forEach(service => {

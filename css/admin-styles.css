@@ -1568,6 +1568,10 @@ body {
   }
   
   .navbar-search {
+    display: flex !important;
+  }
+}
+  .navbar-search {
     width: auto;
     min-width: 0;
   }

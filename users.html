@@ -5,6 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users Management - HTECHSUBS Admin Panel</title>
     <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        /* Make search field visible on all screen sizes */
+        .navbar-search {
+            display: flex !important;
+            align-items: center;
+            background: #F1F3F5;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            gap: 12px;
+            width: 350px;
+            transition: all 0.3s ease;
+            cursor: text;
+            box-sizing: border-box;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 100;
+        }
+
+        .navbar-search:hover {
+            border-color: #CBD5E1;
+            background: #F8F9FA;
+        }
+
+        .navbar-search:focus-within {
+            border-color: #6C3BFF;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(108, 59, 255, 0.1);
+        }
+
+        .navbar-search input {
+            flex: 1 !important;
+            background: transparent !important;
+            border: none !important;
+            font-size: 13px !important;
+            color: #0F172A !important;
+            outline: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-family: inherit !important;
+            min-width: 100px !important;
+            height: 20px !important;
+            width: auto !important;
+            -webkit-appearance: textfield !important;
+            appearance: textfield !important;
+            position: relative;
+            z-index: 50 !important;
+            pointer-events: auto !important;
+            caret-color: #6C3BFF;
+        }
+
+        .navbar-search input::placeholder {
+            color: #94A3B8 !important;
+            opacity: 1 !important;
+            font-size: 13px !important;
+        }
+
+        .navbar-search input::-webkit-input-placeholder {
+            color: #94A3B8 !important;
+            opacity: 1 !important;
+            font-size: 13px !important;
+        }
+
+        .navbar-search input::-moz-placeholder {
+            color: #94A3B8 !important;
+            opacity: 1 !important;
+            font-size: 13px !important;
+        }
+
+        .navbar-search input::-webkit-outer-spin-button,
+        .navbar-search input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .navbar-search input:focus::placeholder {
+            color: #CBD5E1 !important;
+        }
+
+        .navbar-search svg {
+            width: 18px;
+            height: 18px;
+            color: #94A3B8;
+            flex-shrink: 0;
+            pointer-events: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-search {
+                width: 200px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -182,10 +276,10 @@
 
                 <div class="navbar-right">
                     <div class="navbar-search">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px; color: #94A3B8; flex-shrink: 0;">
                             <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
                         </svg>
-                        <input type="text" id="searchInput" placeholder="Search users...">
+                        <input type="text" id="searchInput" placeholder="Search users by name or email..." style="flex: 1; background: none; border: none; font-size: 13px; color: #0F172A; outline: none; padding: 0;">
                     </div>
 
                     <div class="navbar-actions">

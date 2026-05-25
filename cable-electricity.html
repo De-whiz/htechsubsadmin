@@ -66,6 +66,37 @@
             box-shadow: 0 0 0 3px rgba(108, 59, 255, 0.1);
         }
 
+        .service-toggle {
+            width: 50px;
+            height: 26px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 13px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .service-toggle.enabled {
+            background: var(--success);
+        }
+
+        .service-toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: var(--white);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .service-toggle.enabled::after {
+            left: 26px;
+        }
+
         .info-box-small {
             background: #E3F2FD;
             border-left: 4px solid #1565C0;
@@ -300,15 +331,15 @@
 
         const services = {
             cable: [
-                { id: 'dstv', name: 'DSTV Monthly', costPrice: 5000, markupPercent: 8 },
-                { id: 'gotv', name: 'GOtv Monthly', costPrice: 3500, markupPercent: 10 },
-                { id: 'startimes', name: 'StarTimes Monthly', costPrice: 3500, markupPercent: 10 }
+                { id: 'dstv', name: 'DSTV Monthly', costPrice: 5000, enabled: true, level1: { markupPercent: 8 }, level2: { markupPercent: 6 } },
+                { id: 'gotv', name: 'GOtv Monthly', costPrice: 3500, enabled: true, level1: { markupPercent: 10 }, level2: { markupPercent: 8 } },
+                { id: 'startimes', name: 'StarTimes Monthly', costPrice: 3500, enabled: true, level1: { markupPercent: 10 }, level2: { markupPercent: 8 } }
             ],
             electricity: [
-                { id: 'ikedc', name: 'IKEDC Electricity (₦5,000)', costPrice: 1000, markupPercent: 5 },
-                { id: 'ekedc', name: 'EKEDC Electricity (₦5,000)', costPrice: 1200, markupPercent: 6 },
-                { id: 'phed', name: 'PHED Electricity (₦5,000)', costPrice: 1100, markupPercent: 5 },
-                { id: 'bedc', name: 'BEDC Electricity (₦5,000)', costPrice: 1150, markupPercent: 6 }
+                { id: 'ikedc', name: 'IKEDC Electricity (₦5,000)', costPrice: 1000, enabled: true, level1: { markupPercent: 5 }, level2: { markupPercent: 3 } },
+                { id: 'ekedc', name: 'EKEDC Electricity (₦5,000)', costPrice: 1200, enabled: true, level1: { markupPercent: 6 }, level2: { markupPercent: 4 } },
+                { id: 'phed', name: 'PHED Electricity (₦5,000)', costPrice: 1100, enabled: true, level1: { markupPercent: 5 }, level2: { markupPercent: 3 } },
+                { id: 'bedc', name: 'BEDC Electricity (₦5,000)', costPrice: 1150, enabled: true, level1: { markupPercent: 6 }, level2: { markupPercent: 4 } }
             ]
         };
 
@@ -325,28 +356,68 @@
                 <div class="card" style="margin-bottom: var(--spacing-xl);">
                     <div style="padding: var(--spacing-lg); border-bottom: 2px solid var(--border-lighter); margin-bottom: var(--spacing-lg);">
                         <h2 style="font-size: 20px; font-weight: 600; color: var(--text-dark); margin: 0;">🎬 Cable Services</h2>
-                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for all cable plans at once</p>
+                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for Level 1 and Level 2 users</p>
                     </div>
 
-                    <div id="cableServicesGrid" style="padding: var(--spacing-lg);">
-                        ${services.cable.map(service => `
-                            <div class="service-card" style="padding: var(--spacing-md); margin-bottom: var(--spacing-md); background: var(--bg-light-secondary);">
-                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
-                                    <div>
-                                        <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">${service.name}</div>
-                                        <div style="font-size: 12px; color: var(--text-light);">Cost: ₦${service.costPrice.toLocaleString()}</div>
-                                    </div>
-                                    <div class="pricing-field">
-                                        <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
-                                        <input type="number" class="pricing-input cable-markup" id="cable_markup_${service.id}" data-service-id="${service.id}" value="${service.markupPercent}" step="0.1" min="0">
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
-                                        <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="cable-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.markupPercent)).toLocaleString()}</span></div>
-                                    </div>
-                                </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <!-- Level 1 Users -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 1 Users</h3>
+                                <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Regular and SME users</p>
                             </div>
-                        `).join('')}
+                            <div id="cableLevel1Grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                                ${services.cable.map(service => `
+                                    <div class="service-card" style="padding: var(--spacing-md); background: var(--bg-light-secondary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                            <div>
+                                                <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">${service.name}</div>
+                                                <div style="font-size: 12px; color: var(--text-light);">Cost: ₦${service.costPrice.toLocaleString()}</div>
+                                            </div>
+                                            <button class="service-toggle enabled" onclick="toggleCableService('${service.id}')"></button>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input cable-l1-markup" id="cable_l1_markup_${service.id}" data-service-id="${service.id}" value="${service.level1.markupPercent}" step="0.1" min="0">
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="cable-l1-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level1.markupPercent)).toLocaleString()}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Level 2 Users -->
+                        <div style="border-top: 2px solid var(--border-lighter); padding-top: var(--spacing-lg);">
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 2 Users</h3>
+                                <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Corporate and Developers</p>
+                            </div>
+                            <div id="cableLevel2Grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                                ${services.cable.map(service => `
+                                    <div class="service-card" style="padding: var(--spacing-md); background: var(--bg-light-secondary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                            <div style="font-weight: 600; color: var(--text-dark);">${service.name}</div>
+                                            <button class="service-toggle enabled" onclick="toggleCableService('${service.id}')"></button>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input cable-l2-markup" id="cable_l2_markup_${service.id}" data-service-id="${service.id}" value="${service.level2.markupPercent}" step="0.1" min="0">
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="cable-l2-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level2.markupPercent)).toLocaleString()}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="section-actions" style="padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter); background: var(--bg-light-secondary); border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
@@ -361,28 +432,65 @@
                 <div class="card">
                     <div style="padding: var(--spacing-lg); border-bottom: 2px solid var(--border-lighter); margin-bottom: var(--spacing-lg);">
                         <h2 style="font-size: 20px; font-weight: 600; color: var(--text-dark); margin: 0;">⚡ Electricity Services</h2>
-                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for all electricity plans at once</p>
+                        <p style="color: var(--text-light); font-size: 13px; margin: 8px 0 0 0;">Edit markup percent for Level 1 and Level 2 users</p>
                     </div>
 
-                    <div id="electricityServicesGrid" style="padding: var(--spacing-lg);">
-                        ${services.electricity.map(service => `
-                            <div class="service-card" style="padding: var(--spacing-md); margin-bottom: var(--spacing-md); background: var(--bg-light-secondary);">
-                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
-                                    <div>
-                                        <div style="font-weight: 600; color: var(--text-dark); margin-bottom: 4px;">${service.name}</div>
-                                        <div style="font-size: 12px; color: var(--text-light);">Cost: ₦${service.costPrice.toLocaleString()}</div>
-                                    </div>
-                                    <div class="pricing-field">
-                                        <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
-                                        <input type="number" class="pricing-input electricity-markup" id="electricity_markup_${service.id}" data-service-id="${service.id}" value="${service.markupPercent}" step="0.1" min="0">
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
-                                        <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="electricity-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.markupPercent)).toLocaleString()}</span></div>
-                                    </div>
-                                </div>
+                    <div style="padding: var(--spacing-lg);">
+                        <!-- Level 1 Users -->
+                        <div style="margin-bottom: var(--spacing-xl);">
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 1 Users</h3>
+                                <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Regular and SME users</p>
                             </div>
-                        `).join('')}
+                            <div id="electricityLevel1Grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                                ${services.electricity.map(service => `
+                                    <div class="service-card" style="padding: var(--spacing-md); background: var(--bg-light-secondary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                            <div style="font-weight: 600; color: var(--text-dark);">${service.name}</div>
+                                            <button class="service-toggle enabled" onclick="toggleElectricityService('${service.id}')"></button>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input electricity-l1-markup" id="electricity_l1_markup_${service.id}" data-service-id="${service.id}" value="${service.level1.markupPercent}" step="0.1" min="0">
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="electricity-l1-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level1.markupPercent)).toLocaleString()}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Level 2 Users -->
+                        <div style="border-top: 2px solid var(--border-lighter); padding-top: var(--spacing-lg);">
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin: 0;">Level 2 Users</h3>
+                                <p style="color: var(--text-light); font-size: 12px; margin: 4px 0 0 0;">Corporate and Developers</p>
+                            </div>
+                            <div id="electricityLevel2Grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                                ${services.electricity.map(service => `
+                                    <div class="service-card" style="padding: var(--spacing-md); background: var(--bg-light-secondary);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                                            <div style="font-weight: 600; color: var(--text-dark);">${service.name}</div>
+                                            <button class="service-toggle enabled" onclick="toggleElectricityService('${service.id}')"></button>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                                            <div class="pricing-field">
+                                                <label class="pricing-label" style="margin-bottom: 4px;">Markup %</label>
+                                                <input type="number" class="pricing-input electricity-l2-markup" id="electricity_l2_markup_${service.id}" data-service-id="${service.id}" value="${service.level2.markupPercent}" step="0.1" min="0">
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div style="font-size: 12px; color: var(--text-light); margin-bottom: 4px;">Selling Price</div>
+                                                <div style="font-size: 16px; font-weight: 600; color: var(--success);">₦<span class="electricity-l2-selling-${service.id}">${Math.round(calculateSellingPrice(service.costPrice, service.level2.markupPercent)).toLocaleString()}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="section-actions" style="padding: var(--spacing-lg); border-top: 1px solid var(--border-lighter); background: var(--bg-light-secondary); border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
@@ -397,28 +505,54 @@
         }
 
         function attachEventListeners() {
-            // Cable markup listeners
-            document.querySelectorAll('.cable-markup').forEach(input => {
+            // Cable Level 1 markup listeners
+            document.querySelectorAll('.cable-l1-markup').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const serviceId = e.target.dataset.serviceId;
                     const service = services.cable.find(s => s.id === serviceId);
                     if (service) {
                         const markup = parseFloat(e.target.value) || 0;
                         const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
-                        document.querySelector(`.cable-selling-${serviceId}`).textContent = selling.toLocaleString();
+                        document.querySelector(`.cable-l1-selling-${serviceId}`).textContent = selling.toLocaleString();
                     }
                 });
             });
 
-            // Electricity markup listeners
-            document.querySelectorAll('.electricity-markup').forEach(input => {
+            // Cable Level 2 markup listeners
+            document.querySelectorAll('.cable-l2-markup').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const serviceId = e.target.dataset.serviceId;
+                    const service = services.cable.find(s => s.id === serviceId);
+                    if (service) {
+                        const markup = parseFloat(e.target.value) || 0;
+                        const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
+                        document.querySelector(`.cable-l2-selling-${serviceId}`).textContent = selling.toLocaleString();
+                    }
+                });
+            });
+
+            // Electricity Level 1 markup listeners
+            document.querySelectorAll('.electricity-l1-markup').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const serviceId = e.target.dataset.serviceId;
                     const service = services.electricity.find(s => s.id === serviceId);
                     if (service) {
                         const markup = parseFloat(e.target.value) || 0;
                         const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
-                        document.querySelector(`.electricity-selling-${serviceId}`).textContent = selling.toLocaleString();
+                        document.querySelector(`.electricity-l1-selling-${serviceId}`).textContent = selling.toLocaleString();
+                    }
+                });
+            });
+
+            // Electricity Level 2 markup listeners
+            document.querySelectorAll('.electricity-l2-markup').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const serviceId = e.target.dataset.serviceId;
+                    const service = services.electricity.find(s => s.id === serviceId);
+                    if (service) {
+                        const markup = parseFloat(e.target.value) || 0;
+                        const selling = Math.round(calculateSellingPrice(service.costPrice, markup));
+                        document.querySelector(`.electricity-l2-selling-${serviceId}`).textContent = selling.toLocaleString();
                     }
                 });
             });
@@ -426,8 +560,10 @@
 
         function saveCableServices() {
             services.cable.forEach(service => {
-                const markup = parseFloat(document.getElementById(`cable_markup_${service.id}`)?.value || service.markupPercent);
-                service.markupPercent = markup;
+                const l1Markup = parseFloat(document.getElementById(`cable_l1_markup_${service.id}`)?.value || service.level1.markupPercent);
+                const l2Markup = parseFloat(document.getElementById(`cable_l2_markup_${service.id}`)?.value || service.level2.markupPercent);
+                service.level1.markupPercent = l1Markup;
+                service.level2.markupPercent = l2Markup;
             });
             localStorage.setItem('cable_electricity_pricing_cable', JSON.stringify(services.cable));
             showToast('✅ Cable services pricing saved successfully!', 'success');
@@ -435,8 +571,10 @@
 
         function saveElectricityServices() {
             services.electricity.forEach(service => {
-                const markup = parseFloat(document.getElementById(`electricity_markup_${service.id}`)?.value || service.markupPercent);
-                service.markupPercent = markup;
+                const l1Markup = parseFloat(document.getElementById(`electricity_l1_markup_${service.id}`)?.value || service.level1.markupPercent);
+                const l2Markup = parseFloat(document.getElementById(`electricity_l2_markup_${service.id}`)?.value || service.level2.markupPercent);
+                service.level1.markupPercent = l1Markup;
+                service.level2.markupPercent = l2Markup;
             });
             localStorage.setItem('cable_electricity_pricing_electricity', JSON.stringify(services.electricity));
             showToast('✅ Electricity services pricing saved successfully!', 'success');
@@ -450,6 +588,35 @@
         function resetElectricityServices() {
             renderServices();
             showToast('Electricity services have been reset', 'info');
+        }
+
+        function toggleCableService(serviceId) {
+            const service = services.cable.find(s => s.id === serviceId);
+            if (service) {
+                service.enabled = !service.enabled;
+                renderServices();
+                const status = service.enabled ? 'enabled' : 'disabled';
+                showToast(`Cable service ${status}`, service.enabled ? 'success' : 'warning');
+            }
+        }
+
+        function toggleElectricityService(serviceId) {
+            const service = services.electricity.find(s => s.id === serviceId);
+            if (service) {
+                service.enabled = !service.enabled;
+                renderServices();
+                const status = service.enabled ? 'enabled' : 'disabled';
+                showToast(`Electricity service ${status}`, service.enabled ? 'success' : 'warning');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6';
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; font-weight: 600;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         // Initialize

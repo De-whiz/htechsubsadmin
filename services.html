@@ -133,6 +133,90 @@
             font-size: 12px;
             text-align: right;
         }
+
+        .services-master-control {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, rgba(108, 59, 255, 0.1) 100%);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: 0 4px 12px rgba(108, 59, 255, 0.15);
+        }
+
+        .services-master-control h2 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: var(--spacing-lg);
+            font-weight: 700;
+        }
+
+        .service-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .service-control-item {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--border-lighter);
+            transition: all 0.3s;
+        }
+
+        .service-control-item:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(108, 59, 255, 0.1);
+        }
+
+        .service-control-item.disabled {
+            opacity: 0.6;
+        }
+
+        .service-control-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .service-master-toggle {
+            width: 50px;
+            height: 28px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .service-master-toggle.active {
+            background: var(--success);
+        }
+
+        .service-master-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .service-master-toggle.active::after {
+            left: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-search {
+                display: flex !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -341,6 +425,41 @@
                 <div style="margin-bottom: var(--spacing-xl);">
                     <h1 style="font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: var(--spacing-md);">Services Management</h1>
                     <p style="color: var(--text-light); font-size: 14px;">Manage all VTU services, pricing, and configurations</p>
+                </div>
+
+                <!-- MASTER SERVICES CONTROL PANEL -->
+                <div class="services-master-control">
+                    <h2>📋 Services Master Control</h2>
+                    <div class="service-controls-grid">
+                        <div class="service-control-item" id="dataService">
+                            <span class="service-control-name">Data Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'data')"></button>
+                        </div>
+                        <div class="service-control-item" id="airtimeService">
+                            <span class="service-control-name">Airtime Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'airtime')"></button>
+                        </div>
+                        <div class="service-control-item" id="cableService">
+                            <span class="service-control-name">Cable TV Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'cable')"></button>
+                        </div>
+                        <div class="service-control-item" id="electricityService">
+                            <span class="service-control-name">Electricity Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'electricity')"></button>
+                        </div>
+                        <div class="service-control-item" id="examService">
+                            <span class="service-control-name">Exam Checkers</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'exam')"></button>
+                        </div>
+                        <div class="service-control-item" id="ninService">
+                            <span class="service-control-name">NIN Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'nin')"></button>
+                        </div>
+                        <div class="service-control-item" id="cacService">
+                            <span class="service-control-name">CAC Services</span>
+                            <button class="service-master-toggle active" onclick="toggleMasterService(event, 'cac')"></button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- SERVICE TABS -->
@@ -850,6 +969,34 @@
         // Toggle service
         function toggleService(btn) {
             btn.classList.toggle('active');
+        }
+
+        // Toggle master service on/off
+        function toggleMasterService(event, serviceName) {
+            const btn = event.target;
+            btn.classList.toggle('active');
+            
+            const serviceItem = document.getElementById(serviceName + 'Service');
+            if (btn.classList.contains('active')) {
+                serviceItem.classList.remove('disabled');
+                showToast(`${serviceName.charAt(0).toUpperCase() + serviceName.slice(1)} service is now enabled`, 'success');
+            } else {
+                serviceItem.classList.add('disabled');
+                showToast(`${serviceName.charAt(0).toUpperCase() + serviceName.slice(1)} service is now disabled`, 'warning');
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6';
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; font-weight: 600;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
         }
 
         // Save service

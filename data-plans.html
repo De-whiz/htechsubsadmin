@@ -88,9 +88,115 @@
             flex: 1;
         }
 
+        .network-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-lighter);
+        }
+
+        .network-status-label {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .network-toggle {
+            width: 40px;
+            height: 24px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .network-toggle.active {
+            background: var(--success);
+        }
+
+        .network-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .network-toggle.active::after {
+            left: 18px;
+        }
+
+        .network-datatypes {
+            margin-top: var(--spacing-md);
+            padding-left: var(--spacing-md);
+            border-left: 2px solid var(--border-lighter);
+            display: none;
+        }
+
+        .network-datatypes.show {
+            display: block;
+        }
+
+        .datatype-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            margin-bottom: var(--spacing-sm);
+            font-size: 12px;
+        }
+
+        .datatype-label {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .datatype-toggle {
+            width: 35px;
+            height: 20px;
+            background: var(--border-lighter);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .datatype-toggle.active {
+            background: var(--success);
+        }
+
+        .datatype-toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .datatype-toggle.active::after {
+            left: 17px;
+        }
+
         @media (max-width: 768px) {
             .plans-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .navbar-search {
+                display: flex !important;
             }
         }
     </style>
@@ -345,6 +451,24 @@
                             <button class="btn btn-secondary btn-sm">Edit</button>
                             <button class="btn btn-secondary btn-sm">Deactivate</button>
                         </div>
+                        <div class="network-status">
+                            <span class="network-status-label">📡 MTN Network</span>
+                            <button class="network-toggle active" onclick="toggleNetwork(event, 'mtn')" title="Toggle MTN Data availability"></button>
+                        </div>
+                        <div class="network-datatypes show" id="mtn-datatypes">
+                            <div class="datatype-item">
+                                <span class="datatype-label">SME Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle SME"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">Gifting Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle Gifting"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">AWOOF Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle AWOOF"></button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Airtel Plans -->
@@ -377,6 +501,24 @@
                         <div class="plan-actions">
                             <button class="btn btn-secondary btn-sm">Edit</button>
                             <button class="btn btn-secondary btn-sm">Deactivate</button>
+                        </div>
+                        <div class="network-status">
+                            <span class="network-status-label">📡 Airtel Network</span>
+                            <button class="network-toggle active" onclick="toggleNetwork(event, 'airtel')" title="Toggle Airtel Data availability"></button>
+                        </div>
+                        <div class="network-datatypes show" id="airtel-datatypes">
+                            <div class="datatype-item">
+                                <span class="datatype-label">SME Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle SME"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">Gifting Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle Gifting"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">AWOOF Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle AWOOF"></button>
+                            </div>
                         </div>
                     </div>
 
@@ -411,6 +553,24 @@
                             <button class="btn btn-secondary btn-sm">Edit</button>
                             <button class="btn btn-secondary btn-sm">Deactivate</button>
                         </div>
+                        <div class="network-status">
+                            <span class="network-status-label">📡 Glo Network</span>
+                            <button class="network-toggle active" onclick="toggleNetwork(event, 'glo')" title="Toggle Glo Data availability"></button>
+                        </div>
+                        <div class="network-datatypes show" id="glo-datatypes">
+                            <div class="datatype-item">
+                                <span class="datatype-label">SME Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle SME"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">Gifting Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle Gifting"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">AWOOF Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle AWOOF"></button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 9Mobile Plans -->
@@ -444,6 +604,24 @@
                             <button class="btn btn-secondary btn-sm">Edit</button>
                             <button class="btn btn-secondary btn-sm">Deactivate</button>
                         </div>
+                        <div class="network-status">
+                            <span class="network-status-label">📡 9Mobile Network</span>
+                            <button class="network-toggle active" onclick="toggleNetwork(event, '9mobile')" title="Toggle 9Mobile Data availability"></button>
+                        </div>
+                        <div class="network-datatypes show" id="9mobile-datatypes">
+                            <div class="datatype-item">
+                                <span class="datatype-label">SME Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle SME"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">Gifting Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle Gifting"></button>
+                            </div>
+                            <div class="datatype-item">
+                                <span class="datatype-label">AWOOF Plan</span>
+                                <button class="datatype-toggle active" onclick="toggleDatatype(event)" title="Toggle AWOOF"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -458,6 +636,41 @@
 
         function addPlan() {
             alert('Add Plan functionality coming soon!');
+        }
+
+        function toggleNetwork(event, networkName) {
+            const btn = event.target;
+            btn.classList.toggle('active');
+            const isActive = btn.classList.contains('active');
+            const status = isActive ? 'enabled' : 'disabled';
+            showToast(`${networkName.toUpperCase()} Network ${status}`, isActive ? 'success' : 'warning');
+            
+            // Toggle data types visibility
+            const datatypesContainer = document.getElementById(`${networkName}-datatypes`);
+            if (datatypesContainer) {
+                datatypesContainer.classList.toggle('show');
+            }
+        }
+
+        function toggleDatatype(event) {
+            const btn = event.target;
+            btn.classList.toggle('active');
+            const isActive = btn.classList.contains('active');
+            const label = btn.previousElementSibling?.textContent || 'Data Type';
+            const status = isActive ? 'enabled' : 'disabled';
+            showToast(`${label} ${status}`, isActive ? 'success' : 'warning');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#10B981' : type === 'warning' ? '#F59E0B' : '#3B82F6';
+            toast.style.cssText = `position: fixed; bottom: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: 8px; z-index: 10000; font-weight: 600;`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
         }
     </script>
 </body>
