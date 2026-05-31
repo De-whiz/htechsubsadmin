@@ -353,6 +353,16 @@
                         </div>
                     </div>
 
+                    <!-- SEARCH BAR -->
+                    <div style="padding: var(--spacing-lg); border-bottom: 1px solid var(--border-lighter); background: var(--bg-light-secondary);">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px; color: #94A3B8; flex-shrink: 0;">
+                                <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
+                            </svg>
+                            <input type="text" id="tableSearchInput" placeholder="Search by name or email (e.g., john@example.com)..." style="flex: 1; background: none; border: none; font-size: 13px; color: #0F172A; outline: none; padding: 8px 0;" />
+                        </div>
+                    </div>
+
                     <div class="table-container">
                         <table class="table">
                             <thead>
@@ -637,6 +647,19 @@
 
             document.getElementById('userCount').textContent = filteredUsers.length;
 
+            // Show "No records found" message if filtered results are empty
+            if (filteredUsers.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="8" style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+                        <div style="font-size: 14px;">No records found</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: var(--text-lighter);">Try adjusting your search or filter criteria</div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+
             filteredUsers.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -700,10 +723,15 @@
             }
         }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            currentFilter.search = e.target.value;
-            renderUsers();
+        // Search functionality - sync both search fields
+        const searchInputs = document.querySelectorAll('#searchInput, #tableSearchInput');
+        searchInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                currentFilter.search = e.target.value;
+                // Sync both inputs
+                searchInputs.forEach(s => s.value = e.target.value);
+                renderUsers();
+            });
         });
 
         // Filter by status
